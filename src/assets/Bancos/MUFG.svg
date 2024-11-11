@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW Home & Student X7 -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="30mm" height="30mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 450 450"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil2 {fill:none}
+    .fil1 {fill:#5A5B5B;fill-rule:nonzero}
+    .fil0 {fill:#E61E24;fill-rule:nonzero}
+   ]]>
+  </style>
+ </defs>
+ <g id="Camada_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="_678055208">
+   <g>
+    <g>
+     <path class="fil0" d="M55 174c8,-1 16,2 24,4 7,-1 13,-4 20,-4 18,0 34,10 44,24 10,15 10,35 3,50 -12,22 -39,34 -63,25 -4,-2 -8,0 -12,1 -15,5 -32,1 -44,-9 -16,-12 -23,-34 -18,-53 6,-21 25,-36 46,-38zm7 8l0 0c-17,7 -30,25 -29,44 0,24 22,47 46,45 27,2 50,-25 47,-51 -2,-14 -11,-26 -22,-34 -12,-8 -28,-9 -42,-4z"/>
+    </g>
+    <path class="fil0" d="M72 205c12,-5 28,6 28,19 1,12 -9,23 -21,22 -11,0 -20,-9 -21,-20 -1,-9 6,-17 14,-21z"/>
+   </g>
+   <g>
+    <g>
+     <path class="fil1" d="M176 192c6,0 11,0 16,0 6,9 11,18 17,26 0,0 1,0 2,0 6,-9 11,-18 17,-26 5,0 10,0 15,0 0,22 0,44 0,67 -5,0 -9,0 -14,0 0,-15 0,-29 0,-44 -6,10 -13,19 -19,29 -7,-9 -13,-19 -19,-28 0,14 0,28 0,43 -5,0 -10,0 -15,0 0,-22 0,-45 0,-67z"/>
+     <path class="fil1" d="M254 192c5,0 10,0 15,0 0,13 0,25 0,38 0,6 2,12 6,14 7,4 16,3 20,-3 3,-4 3,-8 3,-13 0,-12 0,-24 0,-36 5,0 10,0 15,0 0,14 0,28 0,42 -1,7 -4,14 -9,19 -7,7 -18,7 -28,6 -12,-1 -21,-11 -22,-23 0,-15 0,-29 0,-44z"/>
+     <path class="fil1" d="M324 259c0,-23 0,-45 0,-67 17,0 34,0 52,0 0,4 0,9 0,13 -13,0 -25,0 -38,0 0,5 0,10 1,15 9,0 19,0 29,0 0,4 0,9 0,13 -10,0 -20,0 -29,0 -1,9 -1,17 0,26 -5,0 -10,0 -15,0z"/>
+     <path class="fil1" d="M400 193c14,-4 30,-3 40,7 -3,4 -6,7 -9,10 -7,-4 -16,-8 -24,-5 -16,6 -17,32 -2,39 7,4 16,3 23,-1 0,-4 0,-7 0,-10 -5,0 -10,0 -15,0 0,-4 1,-9 1,-13 9,0 19,0 29,0 0,9 0,19 0,29 -3,4 -9,6 -13,8 -16,5 -36,3 -45,-11 -13,-17 -6,-46 15,-53z"/>
+    </g>
+    <polygon class="fil2" points="0,0 450,0 450,450 0,450 "/>
+   </g>
+  </g>
+ </g>
+</svg>
