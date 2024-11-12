@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "app.ppix.io.mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +31,17 @@
       [
         "expo-font",
         {
-          "fonts": ["node_modules/@expo-google-fonts/montserrat"]
+          "fonts": [
+            "node_modules/@expo-google-fonts/montserrat"
+          ]
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ]
