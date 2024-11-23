@@ -9,7 +9,7 @@ export function Sucess() {
       <Container>
         <Content>
           <SubTitle>
-          Cadastre sua nova senha.
+          Crie sua nova senha para acessar sua conta.
           </SubTitle>
           <Input showIcon name="lock" placeholder="Senha" passwordType />
           <Input showIcon name="lock" placeholder="Confirme sua senha" passwordType />
