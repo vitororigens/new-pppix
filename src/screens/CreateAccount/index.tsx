@@ -1,39 +1,43 @@
 import { DefaultContainer } from "../../components/DefaultContainer";
-import { Container, Content, ContentCard, ContentItems, ContentText, Header, SubTitle, Text, TextColor, Title } from "./styles";
+import { Container, Content, ContentItems, ContentText, Header, Icon, SubTitle, Text, TextColor, Title } from "./styles";
 import Logo from "../../assets/Logo_pppix.svg";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { CardInfo } from "../../components/CardInfo";
 
-export function Login() {
+export function CreateAccount() {
   return (
     <DefaultContainer>
       <Container>
         <Header>
           <Title>
-            Bem vindo!
+            Cadastre - se!
           </Title>
           <Logo width={60} height={70} />
         </Header>
         <Content>
           <SubTitle>
-            Faça seu login na sua conta e comece a sua segurança.
+            Cadastre sua conta e comece a sua segurança.
           </SubTitle>
           <Input showIcon name="envelope" placeholder="E-mail" />
+          <Input showIcon name="phone" placeholder="Telefone" />
           <Input showIcon name="lock" placeholder="Senha" passwordType />
-          <TextColor>
-            Esqueceu a senha?
-          </TextColor>
+          <Input showIcon name="lock" placeholder="Confirme sua senha" passwordType />
+          <ContentText>
+            <Icon name="square-o"/>
+          <Text>
+            Eu concordo com os termos de política de privacidade?
+          </Text>
+          </ContentText>
           <ContentItems>
             <Button title="Entrar" />
             <ContentText>
               <Text>
-                Não tem uma conta?
+                Já tem uma conta?
               </Text>
-              <TextColor> Cadastre - se</TextColor>
+              <TextColor> Entrar</TextColor>
             </ContentText>
           </ContentItems>
-          <CardInfo />
         </Content>
       </Container>
     </DefaultContainer>

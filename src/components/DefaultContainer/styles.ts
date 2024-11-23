@@ -12,7 +12,7 @@ type Props = {
 
 export const Container = styled(SafeAreaView)`
     flex: 1;
-    background: ${({theme}) => theme.COLORS.white};
+    background: ${({theme}) => theme.COLORS.blue[600]};
 `;
 
 export const Menu = styled.View`

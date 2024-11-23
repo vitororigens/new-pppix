@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Button, Container, Content,  Icon, Menu, SubTitle, Title } from "./styles";
+import { Button, Container, Content, Icon, Menu, SubTitle, Title } from "./styles";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -10,11 +10,12 @@ type PropsDefaultContainer = {
   showButtonGears?: boolean;
   showButtonBack?: boolean;
   showButtonEdit?: boolean;
+  showMenu?: boolean;
   onEdit?: () => void;
-  onBack?: () => void
+  onBack?: () => void;
 }
 
-export function DefaultContainer({ children, title, showButtonGears, showButtonBack, showButtonEdit, onEdit, onBack }: PropsDefaultContainer) {
+export function DefaultContainer({ children, title, showButtonGears, showButtonBack, showButtonEdit, onEdit, onBack, showMenu }: PropsDefaultContainer) {
   const navigation = useNavigation()
 
   function HandleGoBack() {
@@ -24,30 +25,32 @@ export function DefaultContainer({ children, title, showButtonGears, showButtonB
 
   return (
     <Container>
-      <Menu>
-        {showButtonBack &&
-          <Button onPress={!!onBack ? onBack : HandleGoBack}>
-            <Icon name="arrow-left" />
-          </Button>
-        }
-        <View>
-        <Title>{title}</Title>
-        </View>
-        {showButtonGears &&
-          <Content>
-             <Button onPress={!!onBack ? onBack : HandleGoBack}>
-              <Icon name="bell" />
+      {showMenu &&
+        <Menu>
+          {showButtonBack &&
+            <Button onPress={!!onBack ? onBack : HandleGoBack}>
+              <Icon name="arrow-left" />
             </Button>
-          </Content>
-        }
-        {showButtonEdit &&
-          <Button onPress={onEdit}>
-            <SubTitle>
-              Editar
-            </SubTitle>
-          </Button>
-        }
-      </Menu>
+          }
+          <View>
+            <Title>{title}</Title>
+          </View>
+          {showButtonGears &&
+            <Content>
+              <Button onPress={!!onBack ? onBack : HandleGoBack}>
+                <Icon name="bell" />
+              </Button>
+            </Content>
+          }
+          {showButtonEdit &&
+            <Button onPress={onEdit}>
+              <SubTitle>
+                Editar
+              </SubTitle>
+            </Button>
+          }
+        </Menu>
+      }
       {children}
     </Container>
   )

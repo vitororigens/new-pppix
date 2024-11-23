@@ -1,5 +1,6 @@
-import { ScrollView } from "react-native";
 import styled from "styled-components/native";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { ScrollView } from "react-native";
 
 export const Container = styled.View`
     flex: 1;
@@ -19,10 +20,11 @@ export const Title = styled.Text`
 `;
 
 export const SubTitle = styled.Text`
- font-family: ${({ theme }) => theme.FONT_FAMILY.heading};
+    font-family: ${({ theme }) => theme.FONT_FAMILY.heading};
     font-size: ${({ theme }) => theme.FONT_SIZE.sm};
     color: ${({ theme }) => theme.COLORS.gray[300]};
     margin-bottom: 20px;
+    width: 250px;
 `;
 
 export const Content = styled(ScrollView).attrs(() => ({
@@ -37,6 +39,7 @@ export const Content = styled(ScrollView).attrs(() => ({
     background: ${({ theme }) => theme.COLORS.white};
     padding: 20px;
 `;
+
 
 
 export const Text = styled.Text`
@@ -67,4 +70,12 @@ export const ContentText = styled.View`
     align-items: center;
     justify-content: center;
     text-align: center;
+`;
+
+export const Icon = styled(FontAwesome).attrs(({ theme }) => ({
+    color: theme.COLORS.gray[600],
+    size: theme.FONT_SIZE.sm
+}))`
+    margin-right: 10px;
+    margin-left: 20px;
 `;
