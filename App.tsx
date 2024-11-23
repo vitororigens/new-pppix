@@ -9,10 +9,9 @@ import { useFonts } from 'expo-font';
 import { Loader } from './src/components/Loader';
 import { ToastProvider } from 'react-native-toast-notifications';
 
-import { Login } from './src/screens/Login';
 import theme from './src/theme';
 import { NavigationContainer } from "@react-navigation/native";
-import { CreateAccount } from "./src/screens/CreateAccount";
+import { Sucess } from "./src/screens/ForgetPassword/Sucess";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -25,7 +24,7 @@ export default function App() {
     <NavigationContainer>
       <ThemeProvider theme={theme}>
         <ToastProvider>
-          {fontLoader ? <CreateAccount /> : <Loader />}
+          {fontLoader ? <Sucess /> : <Loader />}
           <StatusBar style="auto" />
         </ToastProvider>
       </ThemeProvider>

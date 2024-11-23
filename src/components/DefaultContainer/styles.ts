@@ -25,8 +25,8 @@ export const Menu = styled.View`
 
 export const Title = styled.Text`
     font-size: ${({theme}) => theme.FONT_SIZE.lg}px;
-    color: ${({theme}) => theme.COLORS.gray[300]};
-    font-family: ${({theme}) => theme.FONT_FAMILY.body};
+    color: ${({theme}) => theme.COLORS.white};
+    font-family: ${({theme}) => theme.FONT_FAMILY.heading};
     
 `;
 
@@ -42,7 +42,7 @@ margin-right: 10px;
 `;
 
 export const Icon = styled(FontAwesome).attrs(({theme}) => ({
-    color: theme.COLORS.gray[300],
+    color: theme.COLORS.white,
     size: theme.FONT_SIZE.lg
 }))``;
 
