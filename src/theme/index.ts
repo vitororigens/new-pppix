@@ -9,6 +9,7 @@ export default {
       200: "#C4C4CC",
     },
     blue: {
+      400: "#7aa2ff",
       600: "#5372ef",
     },
     purple: {
