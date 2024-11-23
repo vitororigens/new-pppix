@@ -17,13 +17,13 @@ export const Icon = styled(FontAwesome5).attrs(({ theme }) => ({
 
 export const Title = styled.Text`
     font-family: ${({theme}) => theme.FONT_FAMILY.medium};
-    font-size: ${({theme}) => theme.FONT_SIZE.lg};
+    font-size: ${({theme}) => theme.FONT_SIZE.lg}px;
     color: ${({theme}) => theme.COLORS.white};
 `;
 
 export const SubTitle = styled.Text`
     font-family: ${({theme}) => theme.FONT_FAMILY.body};
-    font-size: ${({theme}) => theme.FONT_SIZE.xs};
+    font-size: ${({theme}) => theme.FONT_SIZE.xs}px;
     color: ${({theme}) => theme.COLORS.white};
 `;
 

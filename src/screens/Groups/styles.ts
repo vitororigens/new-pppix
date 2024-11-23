@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 export const Container = styled(ScrollView).attrs(() => ({
     showsVerticalScrollIndicator: false,
     contentContainerStyle: {
-        justifyContent: 'center',
+        alignItems:'center',
         flexGrow: 1,
         paddingBottom: 20,
     },
@@ -17,13 +17,8 @@ export const Container = styled(ScrollView).attrs(() => ({
 
 export const Content = styled.View`
     width: 100%;
-    flex: 1;
-`;
-
-export const ContentPortraitCard = styled.View`
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 20px;
+    background-color: ${({ theme }) => theme.COLORS.blue[400]};
+    min-height: 300px;
+    border-radius: 8px;
+    margin-top: 20px;
 `;

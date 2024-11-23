@@ -1,20 +1,27 @@
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import {AntDesign, MaterialIcons }from '@expo/vector-icons';
 
 export const Container = styled(TouchableOpacity)`
-    height: 130px;
     border-radius: 20px;
     background-color: ${({theme}) => theme.COLORS.blue[400]};
     align-items: center;
-    justify-content: center;
-    padding: 10px;
-    flex: 1;
+    flex-direction: row;
+    padding: 20px;
+    width: 100%;
+    margin-bottom: 20px;
 `;
 
 export const Icon = styled(AntDesign).attrs(({ theme }) => ({
     color: theme.COLORS.white,
-    size: theme.FONT_SIZE.xl
+    size: 50
+}))`
+    margin-right: 10px;
+`;
+
+export const IconArrow = styled(MaterialIcons).attrs(({ theme }) => ({
+    color: theme.COLORS.white,
+    size: theme.FONT_SIZE.lg
 }))``;
 
 export const Title = styled.Text`
@@ -25,6 +32,18 @@ export const Title = styled.Text`
 
 export const SubTitle = styled.Text`
     font-family: ${({theme}) => theme.FONT_FAMILY.body};
-    font-size: ${({theme}) => theme.FONT_SIZE.xs}px;
+    font-size: ${({theme}) => theme.FONT_SIZE.sm}px;
     color: ${({theme}) => theme.COLORS.white};
+`;
+
+export const Content = styled.View`
+    width: 100%;
+    flex: 1;
+`;
+
+export const Items = styled.View`
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
 `;

@@ -8,7 +8,7 @@ export const Container = styled.View`
 
 export const SubTitle = styled.Text`
  font-family: ${({ theme }) => theme.FONT_FAMILY.heading};
-    font-size: ${({ theme }) => theme.FONT_SIZE.sm};
+    font-size: ${({ theme }) => theme.FONT_SIZE.sm}px;
     color: ${({ theme }) => theme.COLORS.gray[300]};
     margin-bottom: 20px;
 `;
@@ -29,7 +29,7 @@ export const Content = styled(ScrollView).attrs(() => ({
 
 export const Text = styled.Text`
     font-family: ${({ theme }) => theme.FONT_FAMILY.body};
-    font-size: ${({ theme }) => theme.FONT_SIZE.sm};
+    font-size: ${({ theme }) => theme.FONT_SIZE.sm}px;
     color: ${({ theme }) => theme.COLORS.gray[600]};
     margin-bottom: 20px;
     margin-top: 20px;

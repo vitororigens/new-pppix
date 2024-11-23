@@ -1,17 +1,24 @@
 import { Container, Icon, SubTitle, Title } from "./styles";
 
-export function PortraitCard(){
+type PortraitCardProps = {
+    icon: string;
+    title: string;
+    subTitle01?: string;
+    subTitle02?: string;
+}
+
+export function PortraitCard({icon, subTitle01, subTitle02, title}: PortraitCardProps){
     return(
         <Container>
-            <Icon name="user"/>
+            <Icon name={icon}/>
             <Title>
-                Grupos
+                {title}
             </Title>
             <SubTitle>
-                0 grupos
+                0 {subTitle01}
             </SubTitle>
             <SubTitle>
-                0 Contatos
+                0 {subTitle02}
             </SubTitle>
         </Container>
     )
