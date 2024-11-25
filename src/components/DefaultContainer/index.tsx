@@ -37,7 +37,7 @@ export function DefaultContainer({ children, title, showButtonGears, showButtonB
           </View>
           {showButtonGears &&
             <Content>
-              <Button onPress={!!onBack ? onBack : HandleGoBack}>
+              <Button onPress={() => navigation.navigate("notifications")}>
                 <Icon name="bell" />
               </Button>
             </Content>

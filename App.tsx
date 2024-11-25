@@ -11,9 +11,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 
 import theme from './src/theme';
 import { NavigationContainer } from "@react-navigation/native";
-import { Sucess } from "./src/screens/ForgetPassword/Sucess";
-import { Home } from "./src/screens/Home";
-import { Groups } from "./src/screens/Groups";
+import { AuthRoutes } from "./src/routes/AuthRoutes";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -26,7 +24,7 @@ export default function App() {
     <NavigationContainer>
       <ThemeProvider theme={theme}>
         <ToastProvider>
-          {fontLoader ? <Groups /> : <Loader />}
+          {fontLoader ? <AuthRoutes /> : <Loader />}
           <StatusBar style="auto" />
         </ToastProvider>
       </ThemeProvider>

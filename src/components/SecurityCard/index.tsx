@@ -1,27 +1,28 @@
-import { Container, Content, Icon, IconArrow, Items, SubTitle, Title } from "./styles";
+import { Container, Content, Icon, Items, SubTitle, Title } from "./styles";
+import Nu from "../../assets/nubank.svg";
+import { Switch } from "../Switch";
 
 type PortraitCardProps = {
     icon: string;
     title: string;
     subTitle?: string;
-    onPress?: () => void;
 }
 
-export function FlatCard({icon, subTitle, title, onPress}: PortraitCardProps){
+export function SecurityCard({icon, subTitle, title}: PortraitCardProps){
     return(
-        <Container onPress={onPress}>
-            <Icon name={icon}/>
+        <Container>
+            <Nu width={40} height={40} />
             <Content>
             <Items>
             <Title>
                 {title}
             </Title>
-            <IconArrow name="arrow-forward-ios"/>
             </Items>
             <SubTitle>
                 {subTitle}
             </SubTitle>
             </Content>
+            <Switch/>
         </Container>
     )
 }

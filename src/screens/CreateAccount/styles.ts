@@ -1,6 +1,6 @@
 import styled from "styled-components/native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { ScrollView } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 
 export const Container = styled.View`
     flex: 1;
@@ -65,7 +65,7 @@ export const ContentItems = styled.View`
     flex: 1;
 `;
 
-export const ContentText = styled.View`
+export const ContentText = styled(TouchableOpacity)`
     flex-direction: row;
     align-items: center;
     justify-content: center;

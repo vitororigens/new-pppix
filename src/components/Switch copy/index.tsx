@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Container, CustomSwitch, Title } from './styles';
 
 type SwitchProps = {
+  title?: string;
   value?: boolean;
   onValueChange?: (value: boolean) => void;
   disabled?: boolean;
 };
 
-export function Switch({ onValueChange, value, disabled }: SwitchProps) {
+export function Switch({ title, onValueChange, value, disabled }: SwitchProps) {
   
   return (
     <Container>
@@ -16,6 +17,9 @@ export function Switch({ onValueChange, value, disabled }: SwitchProps) {
         value={value}
         disabled={disabled}
       />
+      <Title>
+        {title}
+      </Title>
     </Container>
   );
 }

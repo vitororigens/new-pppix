@@ -4,8 +4,11 @@ import Logo from "../../assets/Logo_pppix.svg";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { CardInfo } from "../../components/CardInfo";
+import { useNavigation } from "@react-navigation/native";
 
 export function CreateAccount() {
+  const navigation = useNavigation();
+
   return (
     <DefaultContainer>
       <Container>
@@ -30,8 +33,8 @@ export function CreateAccount() {
           </Text>
           </ContentText>
           <ContentItems>
-            <Button title="Entrar" />
-            <ContentText>
+            <Button title="Cadastrar" onPress={() => navigation.navigate("home")} />
+            <ContentText onPress={() => navigation.navigate("login")}>
               <Text>
                 Já tem uma conta?
               </Text>

@@ -1,11 +1,14 @@
 import { DefaultContainer } from "../../components/DefaultContainer";
-import { Container, Content, ContentCard, ContentItems, ContentText, Header, SubTitle, Text, TextColor, Title } from "./styles";
+import { Container, Content, ContentItems, ContentText, Header, SubTitle, Text, TextColor, Title } from "./styles";
 import Logo from "../../assets/Logo_pppix.svg";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { CardInfo } from "../../components/CardInfo";
+import { useNavigation } from "@react-navigation/native";
 
 export function Login() {
+  const navigation = useNavigation();
+  
   return (
     <DefaultContainer>
       <Container>
@@ -25,8 +28,8 @@ export function Login() {
             Esqueceu a senha?
           </TextColor>
           <ContentItems>
-            <Button title="Entrar" />
-            <ContentText>
+            <Button title="Entrar" onPress={() => navigation.navigate("home")} />
+            <ContentText onPress={() => navigation.navigate("createAccount")}>
               <Text>
                 Não tem uma conta?
               </Text>

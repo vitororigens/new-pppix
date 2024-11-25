@@ -12,7 +12,7 @@ export const Container = styled(TouchableOpacity)<Props>`
     max-height: 50px;
     width: 100%;
     border-radius: 30px;
-    background: ${({theme}) => theme.COLORS.blue[600]};
+    background: ${({theme}) => theme.COLORS.blue[400]};
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;

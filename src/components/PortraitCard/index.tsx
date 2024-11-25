@@ -5,11 +5,12 @@ type PortraitCardProps = {
     title: string;
     subTitle01?: string;
     subTitle02?: string;
+    onPress?: () => void;
 }
 
-export function PortraitCard({icon, subTitle01, subTitle02, title}: PortraitCardProps){
+export function PortraitCard({icon, subTitle01, subTitle02, title, onPress}: PortraitCardProps){
     return(
-        <Container>
+        <Container onPress={onPress}>
             <Icon name={icon}/>
             <Title>
                 {title}
