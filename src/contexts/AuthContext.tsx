@@ -1,9 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
 import { AuthServices } from "../services/AuthServices";
-import { useToast } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState } from "react-native";
 import api from "../config/Axios";
+import {Toast} from "react-native-toast-notifications";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -37,7 +37,6 @@ interface AuthData {
   car_id: string;
 }
 
-
 export interface AuthContextDataProps {
   signin: (data: SigninData) => Promise<AuthData | void>;
   signUp: (data: SignupData) => Promise<void>;
@@ -63,8 +62,6 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [userLogged, setUserLogged] = useState(false);
   const [securityMode, setSecurityMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
-
-  const toast = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,10 +110,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     setPassword(array);
   };
 
-  async function signin({
-    email,
-    password,
-  }: SigninData): Promise<AuthData | void> {
+  async function signin({ email, password }: SigninData): Promise<AuthData | void> {
     try {
       const response = await AuthServices.signIn(email, password);
       const auth = { token: response.data.token, ...response.data.user };
@@ -127,22 +121,19 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       console.log("Dados armazenados: ", auth);
 
-      toast.show({
-        title: "Login realizado com sucesso!",
-        placement: "top",
+      Toast.show("Login realizado com sucesso!", {
+        type: "success",
         duration: 3000,
-        bgColor: "green.500",
+        placement: "top",
       });
 
       return auth;
     } catch (error) {
       console.error("Erro durante o login:", error);
-
-      toast.show({
-        title: "Verifique suas credenciais",
+      Toast.show("Verifique suas credenciais!", {
+        type: "danger",
+        duration: 3000,
         placement: "top",
-        bgColor: "red.500",
-        duration: 5000,
       });
     }
   }
@@ -150,20 +141,18 @@ function AuthProvider({ children }: AuthProviderProps) {
   async function signUp({ email, password, phone }: SignupData) {
     try {
       await AuthServices.signUp(email, password, phone);
-      toast.show({
-        title: "Cadastro realizado com sucesso!",
-        placement: "top",
+      Toast.show("Cadastro realizado com sucesso!", {
+        type: "success",
         duration: 3000,
-        bgColor: "green.500",
+        placement: "top",
       });
     } catch (error: any) {
       console.error("Erro ao verificar autenticação:", error);
-    
-      toast.show({
-        title: error.response?.data?.errors || "Erro desconhecido",
-        placement: "top",
+
+      Toast.show(error.response?.data?.errors || "Erro desconhecido", {
+        type: "danger",
         duration: 3000,
-        bgColor: "red.500",
+        placement: "top",
       });
     }
   }
@@ -173,6 +162,11 @@ function AuthProvider({ children }: AuthProviderProps) {
       await AsyncStorage.removeItem("authData");
       setUserLogged(false);
       setAuthData(null);
+      Toast.show("Logout realizado com sucesso!", {
+        type: "success",
+        duration: 3000,
+        placement: "top",
+      });
     } catch (error) {
       console.error("Erro durante o logout:", error);
     }
@@ -192,13 +186,12 @@ function AuthProvider({ children }: AuthProviderProps) {
         setUserLogged(true);
         setAuthData({
           token: data.token,
-            ...response.data.user,
-            passwordApp: response.data.user.passwordApp || '',
-            passwordEmergecy: response.data.user.passwordEmergecy || '',
-            passwordBank: response.data.user.passwordBank || '',
-            passwordDevice: response.data.user.passwordDevice || '',
-            passwordDeviceEmergency: response.data.user.passwordDeviceEmergency || ''
-          
+          ...response.data.user,
+          passwordApp: response.data.user.passwordApp || '',
+          passwordEmergecy: response.data.user.passwordEmergecy || '',
+          passwordBank: response.data.user.passwordBank || '',
+          passwordDevice: response.data.user.passwordDevice || '',
+          passwordDeviceEmergency: response.data.user.passwordDeviceEmergency || ''
         });
 
         if (
