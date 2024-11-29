@@ -91,7 +91,7 @@ export function Login() {
           />
           {errors.password && <TextError>{errors.password.message}</TextError>}
 
-          <TextColor onPress={() => navigation.navigate("sucess")}>
+          <TextColor onPress={() => navigation.navigate("forgetpassword")}>
             Esqueceu a senha?
           </TextColor>
 

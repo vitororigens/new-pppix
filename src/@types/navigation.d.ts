@@ -9,11 +9,12 @@ export declare global {
             createAccount: undefined;
             person: undefined;
             sucess: undefined;
-            verify: {email?: string};
+            verify: { email?: string };
             groups: undefined;
             security: undefined;
             notifications: undefined;
             forgetpassword: undefined;
+            passloading: { email?: string, code?: string };
         }
     }
 }

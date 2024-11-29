@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Container, Content, Icon, Menu, SubTitle, Title } from "./styles";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../hooks/useAuth";
 
 type PropsDefaultContainer = {
   children?: React.ReactNode;
@@ -17,6 +18,12 @@ type PropsDefaultContainer = {
 
 export function DefaultContainer({ children, title, showButtonGears, showButtonBack, showButtonEdit, onEdit, onBack, showMenu }: PropsDefaultContainer) {
   const navigation = useNavigation()
+  const {signOut} = useAuth()
+
+  function HandleSignOut() {
+    signOut()
+  }
+
 
   function HandleGoBack() {
     navigation.goBack()
@@ -39,6 +46,9 @@ export function DefaultContainer({ children, title, showButtonGears, showButtonB
             <Content>
               <Button onPress={() => navigation.navigate("notifications")}>
                 <Icon name="bell" />
+              </Button>
+              <Button onPress={HandleSignOut}>
+                <Icon name="sign-out" />
               </Button>
             </Content>
           }

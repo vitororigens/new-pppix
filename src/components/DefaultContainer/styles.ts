@@ -38,7 +38,7 @@ export const SubTitle = styled.Text`
 `;
 
 export const Button = styled(TouchableOpacity)`
-margin-right: 10px;
+margin-right: 20px;
 `;
 
 export const Icon = styled(FontAwesome).attrs(({theme}) => ({
