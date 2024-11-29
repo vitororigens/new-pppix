@@ -8,7 +8,7 @@ export declare global {
             createGroup: undefined;
             createAccount: undefined;
             person: undefined;
-            sucess: undefined;
+            sucess: { email?: string, code?: string };
             verify: { email?: string };
             groups: undefined;
             security: undefined;

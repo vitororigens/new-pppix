@@ -91,9 +91,9 @@ export function Login() {
           />
           {errors.password && <TextError>{errors.password.message}</TextError>}
 
-          <TextColor onPress={() => navigation.navigate("forgetpassword")}>
-            Esqueceu a senha?
-          </TextColor>
+          <TextColor onPress={() => navigation.navigate("sucess", { email: undefined, code: undefined })}>
+  Esqueceu a senha?
+</TextColor>
 
           <ContentItems>
             <Button

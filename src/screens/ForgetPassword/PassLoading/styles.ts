@@ -12,6 +12,7 @@ export const Container = styled(ScrollView).attrs(() => ({
     showsVerticalScrollIndicator: false,
     contentContainerStyle: {
         justifyContent: 'center',
+        alignItems:'center',
         flexGrow: 1,
         paddingBottom: 20,
     },

@@ -21,18 +21,18 @@ export function PassLoading() {
   useEffect(() => {
     Toast.show("Verificando...", {
       placement: "top",
-      type: "danger",
+      type: "success",
       duration: 5000,
     });
 
     setTimeout(() => {
       Toast.show("Código verificado com sucesso", {
         placement: "top",
-        type: "danger",
+        type: "success",
         duration: 5000,
       });
 
-      navigation.navigate("SuccessPassword", { email, code });
+      navigation.navigate("sucess", { email, code });
     }, 5200);
   }, []);
 
