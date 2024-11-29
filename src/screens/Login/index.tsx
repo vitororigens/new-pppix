@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-
+import { useAuth } from "../../hooks/useAuth";
 
 const formSchema = z.object({
   email: z.string().min(1, "Email é obrigatório").email("Formato inválido"),
@@ -18,12 +18,16 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
-
 export function Login() {
   const navigation = useNavigation();
+  const { signin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { control, handleSubmit, reset, formState: { errors} } = useForm<FormSchemaType>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -31,19 +35,28 @@ export function Login() {
     },
   });
 
+  async function handleLogin(data: FormSchemaType) {
+    setIsLoading(true);
+    try {
+      await signin(data); 
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <DefaultContainer>
       <Container>
         <Header>
-          <Title>
-            Bem vindo!
-          </Title>
+          <Title>Bem-vindo!</Title>
           <Logo width={60} height={70} />
         </Header>
+
         <Content>
-          <SubTitle>
-            Faça seu login na sua conta e comece a sua segurança.
-          </SubTitle>
+          <SubTitle>Faça seu login na sua conta e comece a sua segurança.</SubTitle>
+
           <Controller
             control={control}
             name="email"
@@ -60,6 +73,7 @@ export function Login() {
             )}
           />
           {errors.email && <TextError>{errors.email.message}</TextError>}
+
           <Controller
             control={control}
             name="password"
@@ -76,28 +90,27 @@ export function Login() {
             )}
           />
           {errors.password && <TextError>{errors.password.message}</TextError>}
-          <TextColor>
+
+          <TextColor onPress={() => navigation.navigate("sucess")}>
             Esqueceu a senha?
           </TextColor>
+
           <ContentItems>
-          <Button
-              onPress={handleSubmit(handleRegister)}
+            <Button
+              onPress={handleSubmit(handleLogin)}
               title="Entrar"
               isLoading={isLoading}
               disabled={isLoading}
             />
             <ContentText onPress={() => navigation.navigate("createAccount")}>
-              <Text>
-                Não tem uma conta?
-              </Text>
-              <TextColor> Cadastre - se</TextColor>
+              <Text>Não tem uma conta?</Text>
+              <TextColor> Cadastre-se</TextColor>
             </ContentText>
           </ContentItems>
+
           <CardInfo />
         </Content>
       </Container>
     </DefaultContainer>
   );
 }
-
-

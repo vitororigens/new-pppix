@@ -4,6 +4,7 @@ import { Login } from "../screens/Login";
 import { Verify } from "../screens/ForgetPassword/Virify";
 import { Sucess } from "../screens/ForgetPassword/Sucess";
 import { AppRoutes } from "./AppRoutes";
+import { ForgetPassword } from "../screens/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ export function AuthRoutes() {
       <Stack.Screen name="createAccount" component={CreateAccount} />
       <Stack.Screen name="verify" component={Verify} />
       <Stack.Screen name="sucess" component={Sucess} />
+      <Stack.Screen name="forgetpassword" component={ForgetPassword} />
       <Stack.Screen name="home" component={AppRoutes} />
     </Stack.Navigator>
   );
