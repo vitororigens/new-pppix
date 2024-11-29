@@ -9,7 +9,7 @@ export const Container = styled.View`
     min-height: 50px;
     max-height: 50px;
     padding: 16px;
-    border-radius: 30px;
+    border-radius: 8px;
     margin-bottom: 10px;
     border-width: 1px;
     border-color: ${({ theme }) => theme.COLORS.blue[600]};

@@ -23,8 +23,7 @@ interface SignupData {
 interface User {
   car_id: string;
 }
-
-interface AuthData {
+export interface AuthData {
   token: string;
   email: string;
   phone: string;

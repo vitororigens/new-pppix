@@ -18,7 +18,6 @@ export function AuthRoutes() {
       <Stack.Screen name="sucess" component={Sucess} />
       <Stack.Screen name="forgetpassword" component={ForgetPassword} />
       <Stack.Screen name="passloading" component={PassLoading} />
-      <Stack.Screen name="home" component={AppRoutes} />
     </Stack.Navigator>
   );
 }
