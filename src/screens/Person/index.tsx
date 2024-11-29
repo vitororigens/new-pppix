@@ -65,7 +65,7 @@ export function Person() {
   };
 
   return (
-    <DefaultContainer title="Perfil" showMenu>
+    <DefaultContainer showMenu showButtonGears title="Perfil" showMenu>
       <Container>
         <PersonCard icon="mail" title="E-mail" subTitle={authData?.email} />
         <PersonCard icon="phone" title="Telefone" subTitle={authData?.phone} />

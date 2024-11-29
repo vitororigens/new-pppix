@@ -5,7 +5,7 @@ import { Container, Content, SubTitle, Title } from "./styles";
 
 export function Security(){
     return(
-        <DefaultContainer title="Perfil" showMenu >
+        <DefaultContainer showMenu showButtonGears title="Aplicativos" >
             <Container>
                 <SecurityCard icon="mail" title="Nubank" subTitle="252 mb"/>
             </Container>
