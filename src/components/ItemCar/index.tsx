@@ -27,7 +27,7 @@ export function ItemCar({
       <Content>
         <Icon name="car" />
         <Title>
-          {brand} - {model} - {color} - {licensePlate}
+          {brand} - {licensePlate}
         </Title>
       </Content>
       <Button onPress={onToggle}>
