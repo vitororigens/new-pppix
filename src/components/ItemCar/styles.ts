@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { TouchableOpacity } from "react-native";
 
 export const Container = styled.View`
     flex-direction: row;
@@ -35,3 +36,5 @@ export const ActionIcon = styled(MaterialIcons).attrs(({ theme }) => ({
 }))`
     margin-left: 10px;
 `;
+
+export const Button = styled(TouchableOpacity)``;

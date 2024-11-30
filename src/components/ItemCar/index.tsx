@@ -1,15 +1,43 @@
 import React from "react";
-import { Container, Content, Icon, Title, ActionIcon } from "./styles";
+import { Container, Content, Icon, Title, ActionIcon, Button } from "./styles";
 
-export function ItemCar() {
-    return (
-        <Container>
-            <Content>
-                <Icon name="car" />
-                <Title>vdgbfg - xkslh</Title>
-            </Content>
-            <ActionIcon name="radio-button-unchecked" />
-            <ActionIcon name="delete" />
-        </Container>
-    );
+type ItemCarProps = {
+  id: string;
+  brand: string;
+  model: string;
+  color: string;
+  licensePlate: string;
+  onDelete: () => void;
+  onToggle: () => void;
+  isChecked: boolean;
+};
+
+export function ItemCar({
+  id,
+  licensePlate,
+  brand,
+  model,
+  color,
+  onDelete,
+  onToggle,
+  isChecked,
+}: ItemCarProps) {
+  return (
+    <Container>
+      <Content>
+        <Icon name="car" />
+        <Title>
+          {brand} - {model} - {color} - {licensePlate}
+        </Title>
+      </Content>
+      <Button onPress={onToggle}>
+        <ActionIcon
+          name={isChecked ? "radio-button-checked" : "radio-button-unchecked"}
+        />
+      </Button>
+      <Button onPress={onDelete}>
+        <ActionIcon name="delete" />
+      </Button>
+    </Container>
+  );
 }
