@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import { Entypo } from '@expo/vector-icons';
+import { TouchableOpacity } from "react-native";
 
 export const Container = styled.View`
     flex-direction: row;
@@ -36,4 +37,6 @@ export const SubTitle = styled.Text`
 
 export const ContentText = styled.View`
     margin-left: 10px;
-`
+`;
+
+export const Button = styled(TouchableOpacity)``;

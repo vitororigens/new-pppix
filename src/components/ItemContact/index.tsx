@@ -1,21 +1,26 @@
+import { Switch } from "../Switch";
 import { Container, Content, StyledIcon, SubTitle, Text, Title } from "./styles";
 
-export function ItemContact(){
-    return(
-        <Container>
-            <StyledIcon>
-                <Text>
-                    T
-                </Text>
-            </StyledIcon>
-            <Content>
-                <Title>
-                    Teste
-                </Title>
-                <SubTitle>
-                    61 9 9996-3966
-                </SubTitle>
-            </Content>
-        </Container>
-    )
+type ItemContactProps = {
+  name: string;
+  phone: string;
+  onToggle: (value: boolean) => void;
+  isToggled: boolean;
+};
+
+export function ItemContact({ name, phone, onToggle, isToggled }: ItemContactProps) {
+  const initial = name.charAt(0).toUpperCase();
+
+  return (
+    <Container>
+      <StyledIcon>
+        <Text>{initial}</Text>
+      </StyledIcon>
+      <Content>
+        <Title>{name}</Title>
+        <SubTitle>{phone}</SubTitle>
+      </Content>
+      <Switch onValueChange={onToggle} value={isToggled} />
+    </Container>
+  );
 }
