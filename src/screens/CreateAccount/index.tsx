@@ -80,6 +80,7 @@ export function CreateAccount() {
   });
 
   async function handleSignup(data: FormSchemaType) {
+    console.log(data)
     if (!policyTerms) {
       toast.show("É necessário aceitar os termos de uso!", {
         placement: "top",

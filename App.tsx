@@ -14,6 +14,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Routes } from "./src/routes/Routes";
 import AuthProvider from "./src/contexts/AuthContext";
 import AxiosProvider from "./src/contexts/AxiosContext";
+import ContactsProvider from "./src/contexts/ContactsContext";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -25,14 +26,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <ThemeProvider theme={theme}>
-      <AuthProvider>
-      <AxiosProvider>
-        <ToastProvider>
-          {fontLoader ? <Routes /> : <Loader />}
-          <StatusBar style="auto" />
-        </ToastProvider>
-        </AxiosProvider>
-        </AuthProvider>
+        <ContactsProvider>
+          <AuthProvider>
+            <AxiosProvider>
+              <ToastProvider>
+                {fontLoader ? <Routes /> : <Loader />}
+                <StatusBar style="auto" />
+              </ToastProvider>
+            </AxiosProvider>
+          </AuthProvider>
+        </ContactsProvider>
       </ThemeProvider>
     </NavigationContainer>
   );

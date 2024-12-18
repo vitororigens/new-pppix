@@ -7,158 +7,123 @@ import { ItemContact } from "../../components/ItemContact";
 import { useAxios } from "../../hooks/useAxios";
 import { useContacts } from "../../hooks/useContacts";
 import { Container, Content } from "./styles";
-import * as ContactsExpo from "expo-contacts";
 import { Toast } from "react-native-toast-notifications";
+import { PickerSelect } from "../../components/PickerSelect";
 
-interface ExtendedContact extends ContactsExpo.Contact {
-  phoneClean: string;
+interface Contact {
+  id: string;
+  name: string;
   phone: string;
 }
 
 export function CreateGroup() {
-  const { allContacts, statusServiceContacts } = useContacts();
+  const { allContacts } = useContacts();
   const { api } = useAxios();
 
-  const { width, height } = Dimensions.get("screen");
   const [loading, setLoading] = useState(true);
-  const [contacts, setContacts] = useState<ExtendedContact[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [validContact, setValidContact] = useState<{ phone: string }[]>([]);
   const [groupContact, setGroupContact] = useState<{ phone: string }[]>([]);
-  const [selectedContacts, setSelectedContacts] = useState<any[]>([]);
-  const [select, setSelect] = useState<string | undefined>("valid");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [select, setSelect] = useState<string>("valid"); // "valid" or "notValid"
 
   const bottomSheetRef = useRef<any>(null);
 
-  // Função para buscar contatos
-  const search = (text: string) => {
-    if (!Array.isArray(allContacts)) return;
+  // Função de busca com base no nome, telefone e tipo de contato (válido ou não válido)
+  const search = useCallback(
+    (text: string) => {
+      setSearchQuery(text.toLowerCase());
 
-    const filteredContacts = allContacts.filter((contact) => {
-      const name = contact.name?.toLowerCase() || "";
-      const phone = contact.phoneNumbers?.[0]?.number?.toLowerCase() || "";
-      const phoneClean = phone.replace(/\s/g, "").replace(/\D/g, "");
-      return (
-        (
+      const filteredContacts = allContacts.filter((contact) => {
+        const matchesName = contact.name.toLowerCase().includes(text.toLowerCase());
+        const matchesPhone = contact.phone.includes(text);
+        const isValid =
           select === "notValid" ||
-          (select === "valid" &&
-            validContact.some((c) => c.phone.includes(phoneClean)))
-        ) &&
-        (text.length === 0 ||
-          name.includes(text.toLowerCase()) ||
-          phone.includes(text.toLowerCase()))
-      );
-    });
-
-    const extendedFilteredContacts: ExtendedContact[] = filteredContacts.map(
-      (contact) => {
-        const { phoneNumbers, ...rest } = contact;
-        const phoneClean =
-          phoneNumbers?.[0]?.number?.replace(/\s/g, "").replace(/\D/g, "") || "";
-        const phone = phoneNumbers?.[0]?.number || "";
-        return { ...rest, phoneClean, phone };
-      }
-    );
-
-    setContacts(extendedFilteredContacts);
-  };
-
-  // Enviar convite por SMS
-  function handleSendSmsInvite(number: string) {
-    api
-      .post("sms/invite", { number })
-      .then(() => {
-        Toast.show({
-          title: "Convite enviado com sucesso!",
-          placement: "top",
-          duration: 3000,
-          bgColor: "green.500",
-        });
-      })
-      .catch(() => {
-        Toast.show({
-          title: "Falha no envio do convite.",
-          placement: "top",
-          duration: 3000,
-          bgColor: "red.500",
-        });
+          (select === "valid" && validContact.some((c) => c.phone === contact.phone));
+        return (matchesName || matchesPhone) && isValid;
       });
-  }
 
-  // Atualizar contatos ao carregar
+      setContacts(filteredContacts);
+    },
+    [allContacts, validContact, select]
+  );
+
   useEffect(() => {
     if (Array.isArray(allContacts) && allContacts.length > 0) {
+      setLoading(true);
       api
         .post("group/users")
-        .then((response) => {
-          const extendedContacts = allContacts.map((contact) => {
-            const { phoneNumbers, ...rest } = contact;
-            const phoneClean =
-              phoneNumbers?.[0]?.number?.replace(/\s/g, "").replace(/\D/g, "") ||
-              "";
-            const phone = phoneNumbers?.[0]?.number || "";
-            return { ...rest, phoneClean, phone };
-          });
-
-          setContacts(extendedContacts);
-          setGroupContact(response.data.group || []);
-          setValidContact(response.data.numbers || []);
+        .then((response: any) => {
+          const group = response.data.group || [];
+          const validNumbers = response.data.numbers || [];
+          setGroupContact(group);
+          setValidContact(validNumbers);
+          setContacts(allContacts);
+        })
+        .catch(() => {
+          Toast.show("Erro ao carregar dados do grupo.", { type: "danger" });
         })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
-  }, [allContacts]);
+  }, [allContacts, api]);
 
-  const handleChangeContact = (number: string, numberClean: string) => {
-    api
-      .post("group/remove", { phone: number })
-      .then(() => {
-        const isMember = groupContact.some((g) =>
-          numberClean.includes(g.phone)
-        );
+  const handleChangeContact = (phone: string) => {
+    const isSelected = groupContact.some((g) => g.phone === phone);
+    if (isSelected) {
+      setGroupContact(groupContact.filter((g) => g.phone !== phone));
+    } else {
+      setGroupContact([...groupContact, { phone }]);
+    }
+  };
 
-        if (isMember) {
-          setGroupContact((prev) =>
-            prev.filter((g) => !numberClean.includes(g.phone))
-          );
-          Toast.show({
-            title: "Usuário removido com sucesso.",
-            placement: "top",
-            duration: 3000,
-            bgColor: "red.500",
-          });
-        } else {
-          setGroupContact((prev) => [...prev, { phone: numberClean }]);
-          Toast.show({
-            title: "Usuário adicionado com sucesso.",
-            placement: "top",
-            duration: 3000,
-            bgColor: "green.500",
-          });
-        }
-      });
+  // Função para atualizar a seleção no PickerSelect
+  const handleSelectChange = (value: string) => {
+    setSelect(value);
+    setSearchQuery(""); // Limpar a pesquisa quando a seleção mudar
+    search(""); // Atualizar a lista de contatos com base no novo tipo de seleção
   };
 
   return (
     <DefaultContainer title="Criar grupo" showMenu showButtonBack>
       <Container>
-        <Input placeholder="Pesquisar" showSearch onChangeText={search} />
+        {/* PickerSelect para escolher entre contatos válidos ou não válidos */}
+        <PickerSelect
+          items={[
+            { label: "Contatos Válidos", value: "valid" },
+            { label: "Contatos Não Válidos", value: "notValid" }
+          ]}
+          onValueChange={handleSelectChange}
+          selectedValue={select}
+          type="PRIMARY"
+        />
+
+        {/* Campo de pesquisa */}
+        <Input
+          placeholder="Pesquisar"
+          value={searchQuery}
+          onChangeText={search}
+        />
+
         <Content>
-          {contacts.map((contact) => (
-            <ItemContact
-              key={contact.id}
-              name={contact.name}
-              phone={contact.phone}
-              isToggled={groupContact.some((g) =>
-                contact.phoneClean.includes(g.phone)
-              )}
-              onToggle={() =>
-                handleChangeContact(contact.phone, contact.phoneClean)
-              }
-            />
-          ))}
+          {loading ? (
+            <Button title="Carregando..." disabled />
+          ) : (
+            contacts.map((contact) => (
+              <ItemContact
+                key={contact.id}
+                name={contact.name}
+                phone={contact.phone}
+                isToggled={groupContact.some((g) => g.phone === contact.phone)}
+                onToggle={() => handleChangeContact(contact.phone)}
+              />
+            ))
+          )}
         </Content>
-        <Button title="Criar grupo" onPress={() => console.log("Criar grupo")} />
+
+        {/* Botão para criar grupo */}
+        <Button title="Criar grupo" onPress={() => console.log("Criar grupo", groupContact)} />
       </Container>
     </DefaultContainer>
   );

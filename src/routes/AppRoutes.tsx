@@ -78,7 +78,6 @@ export function AppRoutes() {
       <Stack.Screen name="groups" component={Groups} />
       <Stack.Screen name="security" component={Security} />
       <Stack.Screen name="notifications" component={Notifications} />
-
     </Stack.Navigator>
   );
 }
