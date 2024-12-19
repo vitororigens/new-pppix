@@ -15,6 +15,7 @@ interface SigninData {
 }
 
 interface SignupData {
+  name: string;
   email: string;
   password: string;
   phone: string;
@@ -145,9 +146,9 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function signUp({ email, password, phone }: SignupData) {
+  async function signUp({ email, password, phone, name }: SignupData) {
     try {
-      await AuthServices.signUp(email, password, phone);
+      await AuthServices.signUp(email, password, phone, name);
       Toast.show("Cadastro realizado com sucesso!", {
         type: "success",
         duration: 3000,

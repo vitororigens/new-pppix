@@ -93,6 +93,7 @@ export function CreateAccount() {
     setIsLoading(true);
     try {
       await signUp({
+        name: data.name,
         email: data.email,
         password: data.password,
         phone: data.phone,

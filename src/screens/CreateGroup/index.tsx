@@ -25,11 +25,10 @@ export function CreateGroup() {
   const [validContact, setValidContact] = useState<{ phone: string }[]>([]);
   const [groupContact, setGroupContact] = useState<{ phone: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [select, setSelect] = useState<string>("valid"); // "valid" or "notValid"
+  const [select, setSelect] = useState<string>("valid");
 
   const bottomSheetRef = useRef<any>(null);
 
-  // Função de busca com base no nome, telefone e tipo de contato (válido ou não válido)
   const search = useCallback(
     (text: string) => {
       setSearchQuery(text.toLowerCase());
@@ -37,10 +36,15 @@ export function CreateGroup() {
       const filteredContacts = allContacts.filter((contact) => {
         const matchesName = contact.name.toLowerCase().includes(text.toLowerCase());
         const matchesPhone = contact.phone.includes(text);
-        const isValid =
-          select === "notValid" ||
-          (select === "valid" && validContact.some((c) => c.phone === contact.phone));
-        return (matchesName || matchesPhone) && isValid;
+
+
+        const isValid = validContact.some((c) => c.phone === contact.phone);
+        const isNotValid = !isValid;
+
+        const matchesValidSelection =
+          select === "notValid" ? isNotValid : select === "valid" ? isValid : false;
+
+        return (matchesName || matchesPhone) && matchesValidSelection;
       });
 
       setContacts(filteredContacts);
@@ -56,9 +60,15 @@ export function CreateGroup() {
         .then((response: any) => {
           const group = response.data.group || [];
           const validNumbers = response.data.numbers || [];
+
+          const validContacts = allContacts.filter((contact) =>
+            validNumbers.some((v) => v.phone === contact.phone)
+          );
+
+          setSelect("valid");
           setGroupContact(group);
           setValidContact(validNumbers);
-          setContacts(allContacts);
+          setContacts(validContacts);
         })
         .catch(() => {
           Toast.show("Erro ao carregar dados do grupo.", { type: "danger" });
@@ -69,26 +79,80 @@ export function CreateGroup() {
     }
   }, [allContacts, api]);
 
-  const handleChangeContact = (phone: string) => {
-    const isSelected = groupContact.some((g) => g.phone === phone);
-    if (isSelected) {
-      setGroupContact(groupContact.filter((g) => g.phone !== phone));
-    } else {
-      setGroupContact([...groupContact, { phone }]);
-    }
-  };
+  console.log(groupContact)
 
-  // Função para atualizar a seleção no PickerSelect
+  function handleChangeContact(number: string) {
+    api
+      .post("group/remove", { phone: number })
+      .then(() => {
+        if (groupContact.some((groupNumber) => groupNumber.phone === number)) {
+          console.log("remover");
+  
+          const newGroupContactArray = groupContact.filter(
+            (groupContact) => groupContact.phone !== number
+          );
+  
+          setGroupContact(newGroupContactArray);
+  
+          Toast.show("Usuário removido com sucesso.", {
+            placement: "top",
+            duration: 3000,
+            type: "danger",
+          });
+        } else {
+          console.log("adicionar");
+  
+          setGroupContact((prevGroupContact) => [
+            ...prevGroupContact,
+            { phone: number },
+          ]);
+  
+          Toast.show("Usuário adicionado com sucesso.", {
+            placement: "top",
+            duration: 3000,
+            type: "success",
+          });
+        }
+      })
+      .catch(() => {
+        Toast.show("Erro ao atualizar o grupo.", {
+          placement: "top",
+          duration: 3000,
+          type: "danger",
+        });
+      });
+  }
+  
+  
+  
+
   const handleSelectChange = (value: string) => {
     setSelect(value);
-    setSearchQuery(""); // Limpar a pesquisa quando a seleção mudar
-    search(""); // Atualizar a lista de contatos com base no novo tipo de seleção
+    setSearchQuery("");
+    search("");
   };
+
+  function handleSendSmsInvite(number:string){
+    api.post('sms/invite', {number})
+    .then(() => {
+      Toast.show('Convite enviado com sucesso', {
+        placement: "top",
+        duration: 3000,
+        type: "success"
+      });
+    })
+    .catch(() => {
+      Toast.show('Falha no envio do convite', {
+        placement: "top",
+        duration: 3000,
+        type: "danger"
+      });
+    })
+  }
 
   return (
     <DefaultContainer title="Criar grupo" showMenu showButtonBack>
       <Container>
-        {/* PickerSelect para escolher entre contatos válidos ou não válidos */}
         <PickerSelect
           items={[
             { label: "Contatos Válidos", value: "valid" },
@@ -99,7 +163,6 @@ export function CreateGroup() {
           type="PRIMARY"
         />
 
-        {/* Campo de pesquisa */}
         <Input
           placeholder="Pesquisar"
           value={searchQuery}
@@ -116,13 +179,14 @@ export function CreateGroup() {
                 name={contact.name}
                 phone={contact.phone}
                 isToggled={groupContact.some((g) => g.phone === contact.phone)}
-                onToggle={() => handleChangeContact(contact.phone)}
+                onToggle={select === "valid" ? () => handleChangeContact(contact.phone) : undefined}
+                buttonSend={select !== "valid" ? () => handleSendSmsInvite(contact.phone) : undefined}
               />
+
             ))
           )}
         </Content>
 
-        {/* Botão para criar grupo */}
         <Button title="Criar grupo" onPress={() => console.log("Criar grupo", groupContact)} />
       </Container>
     </DefaultContainer>

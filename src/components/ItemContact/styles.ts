@@ -1,4 +1,6 @@
 import styled from "styled-components/native";
+import Feather from '@expo/vector-icons/Feather';
+import { TouchableOpacity } from "react-native";
 
 export const Container = styled.View`
     width: 100%;
@@ -41,3 +43,10 @@ export const Text = styled.Text`
     color: ${({ theme }) => theme.COLORS.white};
     text-align: center;
 `;
+
+export const SendIcon = styled(Feather).attrs(({ theme }) => ({
+    color: theme.COLORS.gray[600],
+    size: theme.FONT_SIZE.md
+}))``;
+
+export const Button = styled(TouchableOpacity)``
