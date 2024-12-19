@@ -6,7 +6,9 @@ import { ItemGroup } from "../../components/ItemGroup";
 import { useAuth } from "../../hooks/useAuth";
 import { useAxios } from "../../hooks/useAxios";
 import { Container } from "./styles";
-import {Toast} from "react-native-toast-notifications";
+import { Toast } from "react-native-toast-notifications";
+import { EditFieldModal } from "../../components/EditFieldModal";
+import { ScrollView } from "react-native";
 
 interface UserData {
   email: string;
@@ -30,13 +32,12 @@ export function Groups() {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
   async function updateGroups() {
     try {
-      const response = await api.get("/group");
+      const response = await api.get('/group');
       setGroups(response.data.groups);
     } catch (error) {
-      console.error("Erro ao obter grupos:", error);
+      console.error('Erro ao obter grupos:', error);
     } finally {
       setLoading(false);
     }
@@ -45,6 +46,16 @@ export function Groups() {
   useEffect(() => {
     updateGroups();
   }, []);
+
+  useEffect(() => {
+    if (modalVisible) {
+      const groupToEdit = groups.find((group) => group.group_name === editName);
+      if (groupToEdit) {
+        setEditName(groupToEdit.group_name);
+      }
+    }
+  }, [modalVisible, groups]);
+  
 
   function handleEditGroup(email: string, groupIndex: number) {
     if (authData?.email === email) {
@@ -55,6 +66,7 @@ export function Groups() {
 
   async function handleSaveGroup() {
     try {
+      console.log("Payload enviado:", { name: editName });
       await api.post("/group/update", { name: editName });
       await updateGroups();
       setModalVisible(false);
@@ -68,10 +80,13 @@ export function Groups() {
     }
   }
 
+
   async function handleExitGroup(leader_id: string) {
     try {
-      await api.post("/group/exit", { leader_id });
-      await updateGroups();
+      await api.post('/group/exit', { leader_id: leader_id });
+
+      updateGroups();
+
       Toast.show("Você saiu do grupo!", {
         placement: "top",
         duration: 3000,
@@ -79,8 +94,15 @@ export function Groups() {
       });
     } catch (error) {
       console.error("Erro ao sair do grupo:", error);
+
+      Toast.show("Erro ao sair do grupo.", {
+        placement: "top",
+        duration: 3000,
+        type: "danger",
+      });
     }
   }
+
 
   const filteredGroups = groups.filter((group) =>
     group.group_name.toLowerCase().includes(search.toLowerCase())
@@ -97,17 +119,44 @@ export function Groups() {
         />
 
         {filteredGroups.map((group, index) => (
-          <GroupCard key={group.leader_id} title={group.group_name}>
+          <GroupCard 
+            key={group.leader_id} 
+            title={group.group_name} 
+            onEdit={() => handleEditGroup(group.email, index)}
+          >
             <ItemGroup
               id={group.leader_id}
               onDelete={() => handleExitGroup(group.leader_id)}
-              onEdit={() => handleEditGroup(group.email, index)}
               subTitle={`Você(${authData?.email === group.email ? "Admin" : "Membro"})`}
               phone={group.phone}
             />
+
+            <ScrollView
+              style={{ maxHeight: 200 }}
+              nestedScrollEnabled 
+            >
+              {group.users.map((user) => (
+                <ItemGroup
+                  key={user.email}
+                  id={user.email}
+                  onDelete={() => handleExitGroup(group.leader_id)}
+                  subTitle={`Membro: ${user.email}`}
+                  phone={user.phone}
+                />
+              ))}
+            </ScrollView>
           </GroupCard>
         ))}
       </Container>
+
+      <EditFieldModal
+        value={editName}
+        setValue={(text) => setEditName(text)}
+        field="nome do grupo"
+        onClose={() => setModalVisible(false)}
+        onSubmit={handleSaveGroup} 
+        visible={modalVisible}
+      />
     </DefaultContainer>
   );
 }

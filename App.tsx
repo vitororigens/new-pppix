@@ -15,6 +15,7 @@ import { Routes } from "./src/routes/Routes";
 import AuthProvider from "./src/contexts/AuthContext";
 import AxiosProvider from "./src/contexts/AxiosContext";
 import ContactsProvider from "./src/contexts/ContactsContext";
+import LocationProvider from "./src/contexts/LocationContext";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -29,10 +30,12 @@ export default function App() {
         <ContactsProvider>
           <AuthProvider>
             <AxiosProvider>
-              <ToastProvider>
-                {fontLoader ? <Routes /> : <Loader />}
-                <StatusBar style="auto" />
-              </ToastProvider>
+              <LocationProvider>
+                <ToastProvider>
+                  {fontLoader ? <Routes /> : <Loader />}
+                  <StatusBar style="auto" />
+                </ToastProvider>
+              </LocationProvider>
             </AxiosProvider>
           </AuthProvider>
         </ContactsProvider>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, FlatList } from "react-native";
 import { Button } from "../../components/Button";
 import { DefaultContainer } from "../../components/DefaultContainer";
 import { Input } from "../../components/Input";
@@ -9,6 +9,7 @@ import { useContacts } from "../../hooks/useContacts";
 import { Container, Content } from "./styles";
 import { Toast } from "react-native-toast-notifications";
 import { PickerSelect } from "../../components/PickerSelect";
+import { Loader } from "../../components/Loader";
 
 interface Contact {
   id: string;
@@ -62,7 +63,7 @@ export function CreateGroup() {
           const validNumbers = response.data.numbers || [];
 
           const validContacts = allContacts.filter((contact) =>
-            validNumbers.some((v) => v.phone === contact.phone)
+            validNumbers.some((v: Contact) => v.phone === contact.phone)
           );
 
           setSelect("valid");
@@ -87,13 +88,13 @@ export function CreateGroup() {
       .then(() => {
         if (groupContact.some((groupNumber) => groupNumber.phone === number)) {
           console.log("remover");
-  
+
           const newGroupContactArray = groupContact.filter(
             (groupContact) => groupContact.phone !== number
           );
-  
+
           setGroupContact(newGroupContactArray);
-  
+
           Toast.show("Usuário removido com sucesso.", {
             placement: "top",
             duration: 3000,
@@ -101,12 +102,12 @@ export function CreateGroup() {
           });
         } else {
           console.log("adicionar");
-  
+
           setGroupContact((prevGroupContact) => [
             ...prevGroupContact,
             { phone: number },
           ]);
-  
+
           Toast.show("Usuário adicionado com sucesso.", {
             placement: "top",
             duration: 3000,
@@ -122,9 +123,9 @@ export function CreateGroup() {
         });
       });
   }
-  
-  
-  
+
+
+
 
   const handleSelectChange = (value: string) => {
     setSelect(value);
@@ -132,22 +133,22 @@ export function CreateGroup() {
     search("");
   };
 
-  function handleSendSmsInvite(number:string){
-    api.post('sms/invite', {number})
-    .then(() => {
-      Toast.show('Convite enviado com sucesso', {
-        placement: "top",
-        duration: 3000,
-        type: "success"
-      });
-    })
-    .catch(() => {
-      Toast.show('Falha no envio do convite', {
-        placement: "top",
-        duration: 3000,
-        type: "danger"
-      });
-    })
+  function handleSendSmsInvite(number: string) {
+    api.post('sms/invite', { number })
+      .then(() => {
+        Toast.show('Convite enviado com sucesso', {
+          placement: "top",
+          duration: 3000,
+          type: "success"
+        });
+      })
+      .catch(() => {
+        Toast.show('Falha no envio do convite', {
+          placement: "top",
+          duration: 3000,
+          type: "danger"
+        });
+      })
   }
 
   return (
@@ -171,23 +172,28 @@ export function CreateGroup() {
 
         <Content>
           {loading ? (
-            <Button title="Carregando..." disabled />
+            <Loader/>
           ) : (
-            contacts.map((contact) => (
-              <ItemContact
-                key={contact.id}
-                name={contact.name}
-                phone={contact.phone}
-                isToggled={groupContact.some((g) => g.phone === contact.phone)}
-                onToggle={select === "valid" ? () => handleChangeContact(contact.phone) : undefined}
-                buttonSend={select !== "valid" ? () => handleSendSmsInvite(contact.phone) : undefined}
-              />
-
-            ))
+            <FlatList
+              data={contacts}
+              keyExtractor={(item) => item.id.toString()} 
+              renderItem={({ item }) => (
+                <ItemContact
+                  key={item.id} 
+                  name={item.name}
+                  phone={item.phone}
+                  isToggled={groupContact.some((g) => g.phone === item.phone)}
+                  onToggle={
+                    select === "valid" ? () => handleChangeContact(item.phone) : undefined
+                  }
+                  buttonSend={
+                    select !== "valid" ? () => handleSendSmsInvite(item.phone) : undefined
+                  }
+                />
+              )}
+            />
           )}
         </Content>
-
-        <Button title="Criar grupo" onPress={() => console.log("Criar grupo", groupContact)} />
       </Container>
     </DefaultContainer>
   );

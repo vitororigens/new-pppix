@@ -7,11 +7,10 @@ type ItemGroupProps = {
     subTitle: string;
     id: string;
     onDelete: () => void;
-    onEdit: () => void;
 }
 
 
-export function ItemGroup({ phone, subTitle, onDelete, onEdit }: ItemGroupProps) {
+export function ItemGroup({ phone, subTitle, onDelete }: ItemGroupProps) {
     return (
         <Container>
             <Content>
@@ -35,7 +34,7 @@ export function ItemGroup({ phone, subTitle, onDelete, onEdit }: ItemGroupProps)
             >
               <Popover.Backdrop />
               <Popover.Content>
-                <Menu onDelete={onDelete} onEdit={onEdit} />
+                <Menu onDelete={onDelete} />
               </Popover.Content>
             </Popover>
         </Container>

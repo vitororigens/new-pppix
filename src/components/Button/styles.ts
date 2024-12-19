@@ -10,8 +10,8 @@ type Props = {
 export const Container = styled(TouchableOpacity)<Props>`
     min-height: 50px;
     max-height: 50px;
-    width: 100%;
-    border-radius: 30px;
+    flex: 1;
+    border-radius: 10px;
     background: ${({theme}) => theme.COLORS.blue[400]};
     align-items: center;
     justify-content: center;
