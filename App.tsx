@@ -16,6 +16,9 @@ import AuthProvider from "./src/contexts/AuthContext";
 import AxiosProvider from "./src/contexts/AxiosContext";
 import ContactsProvider from "./src/contexts/ContactsContext";
 import LocationProvider from "./src/contexts/LocationContext";
+import AlertProvider from "./src/contexts/AlertContext";
+import firebase from "firebase/compat";
+import { firebaseConfig } from "./src/services";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -24,6 +27,16 @@ export default function App() {
     Montserrat_700Bold,
   });
 
+  
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase inicializado");
+} else {
+  firebase.app(); // Usa o app já inicializado
+  console.log("Firebase já inicializado");
+}
+
   return (
     <NavigationContainer>
       <ThemeProvider theme={theme}>
@@ -31,10 +44,12 @@ export default function App() {
           <AuthProvider>
             <AxiosProvider>
               <LocationProvider>
-                <ToastProvider>
-                  {fontLoader ? <Routes /> : <Loader />}
-                  <StatusBar style="auto" />
-                </ToastProvider>
+                <AlertProvider>
+                  <ToastProvider>
+                    {fontLoader ? <Routes /> : <Loader />}
+                    <StatusBar style="auto" />
+                  </ToastProvider>
+                </AlertProvider>
               </LocationProvider>
             </AxiosProvider>
           </AuthProvider>

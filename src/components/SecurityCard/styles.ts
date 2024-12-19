@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 import styled from "styled-components/native";
 import {AntDesign }from '@expo/vector-icons';
 
@@ -43,3 +43,8 @@ export const Items = styled.View`
     justify-content: space-between;
     margin-bottom: 10px;
 `;
+
+export const IconApp = styled(Image)`
+    width: 40px;
+    height: 40px;
+`

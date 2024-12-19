@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11117611081",
+    "project_id": "ppix-41bf8",
+    "storage_bucket": "ppix-41bf8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11117611081:android:8647b2e1731e43e3619798",
+        "android_client_info": {
+          "package_name": "app.ppix.io.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4iQ3GHxGZSSDrRA3QOf2_fXfWqOzHu3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

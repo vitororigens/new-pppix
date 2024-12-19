@@ -1,5 +1,5 @@
-import { Container, Content, Icon, Items, SubTitle, Title } from "./styles";
-import Nu from "../../assets/nubank.svg";
+import React from "react";
+import { Container, Content, IconApp, Items, SubTitle, Title } from "./styles";
 import { Switch } from "../Switch";
 
 type PortraitCardProps = {
@@ -11,18 +11,14 @@ type PortraitCardProps = {
 export function SecurityCard({icon, subTitle, title}: PortraitCardProps){
     return(
         <Container>
-            <Nu width={40} height={40} />
+            <IconApp source={{uri: icon}} />
             <Content>
-            <Items>
-            <Title>
-                {title}
-            </Title>
-            </Items>
-            <SubTitle>
-                {subTitle}
-            </SubTitle>
+                <Items>
+                    <Title>{title}</Title>
+                </Items>
+                {subTitle && <SubTitle>{subTitle}</SubTitle>}
             </Content>
-            <Switch/>
+            <Switch />
         </Container>
-    )
+    );
 }
