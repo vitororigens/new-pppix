@@ -10,7 +10,7 @@ async function createChannel() {
         await notifee.createChannel({
             id: 'som',
             name: 'Som de Alerta',
-            sound: 'alerta', // Certifique-se de que o arquivo de som está configurado corretamente no Android
+            sound: 'alerta',
             importance: notifee.AndroidImportance.HIGH,
         });
         console.log('Canal de notificação criado com sucesso');
@@ -39,7 +39,7 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         console.log('Mensagem recebida no background:', remoteMessage);
         if (remoteMessage?.data) {
             await notifee.displayNotification({
-                title: `Atenção ${remoteMessage.data.email}`,
+                title: `Atenção ${remoteMessage.data.name}`,
                 body: 'Novo alerta de emergência',
                 android: {
                     channelId: 'som',

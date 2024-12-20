@@ -19,7 +19,6 @@ import LocationProvider from "./src/contexts/LocationContext";
 import AlertProvider from "./src/contexts/AlertContext";
 import firebase from "firebase/compat";
 import { firebaseConfig } from "./src/services";
-import axios from 'axios'
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -33,13 +32,6 @@ if (!firebase.apps.length) {
 } else {
   firebase.app(); 
 }
-
-axios.interceptors.request.use((config: any) => {
-  // add token to request headers
-  config.headers['Authorization'] = `Bearer 9|M3nVur2gF9gcHup8UXueM9Ojjc912dVYAEL78gXn`;
-  return config;
-});
-
 
   return (
     <NavigationContainer>

@@ -65,6 +65,7 @@ export const AuthContext = createContext<AuthContextDataProps>(
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [authData, setAuthData] = useState<AuthData | null>(null);
+  console.log(authData);
   const [passwords, setPassword] = useState(['', '', '']);
   const [appState, setAppState] = useState(AppState.currentState);
   const [userLogged, setUserLogged] = useState(false);

@@ -5,11 +5,11 @@ import { Audio } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
 import messaging from "@react-native-firebase/messaging";
 import { Linking } from "react-native";
-import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
 import { AlerModal } from "../components/AlertModal";
 
-interface AlertInterface { }
+interface AlertInterface {}
 
 interface LocationProviderInterface {
     children: React.ReactNode;
@@ -17,7 +17,7 @@ interface LocationProviderInterface {
 
 export const AlertContext = createContext<AlertInterface>({} as AlertInterface);
 
-function alertProvider({ children }: LocationProviderInterface) {
+function AlertProvider({ children }: LocationProviderInterface) {
     const [alertData, setAlertData] = useState({
         email: "",
         lat: "",
@@ -31,7 +31,7 @@ function alertProvider({ children }: LocationProviderInterface) {
         },
     });
     const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
     const [showMap, setShowMap] = useState(false);
     const [active, setActive] = useState(true);
     const Axios = useContext(AxiosContext);
@@ -41,6 +41,13 @@ function alertProvider({ children }: LocationProviderInterface) {
 
     async function loadAudio() {
         try {
+            await Audio.setAudioModeAsync({
+                allowsRecordingIOS: false,
+                staysActiveInBackground: true,
+                playsInSilentModeIOS: true,
+                shouldDuckAndroid: true,
+            });
+
             const { sound } = await Audio.Sound.createAsync(
                 require("../assets/alerta.mp3")
             );
@@ -64,28 +71,35 @@ function alertProvider({ children }: LocationProviderInterface) {
         Axios.api.post("alert/update/token", { fcmToken: token });
     }
 
-    function handleSosPolice() {
-        Axios.api.post("alert/stop", { alert_id: alertData.id }).then(() => {
+    async function handleSosPolice() {
+        try {
+            await Axios.api.post("alert/stop", { alert_id: alertData.id });
             setShowModal(false);
             setActive(true);
             Linking.openURL("tel:190");
-            playAudio();
-        });
+            if (sound) await sound.stopAsync(); // Para o áudio
+        } catch (error) {
+            console.error("Erro ao finalizar SOS Polícia:", error);
+        }
     }
 
-    function handleFinishSos() {
-        Axios.api.post("alert/stop", { alert_id: alertData.id }).then(() => {
-            playAudio();
+    async function handleFinishSos() {
+        try {
+            await Axios.api.post("alert/stop", { alert_id: alertData.id });
+            if (sound) await sound.stopAsync(); // Para o áudio
             setShowModal(false);
             setActive(true);
-        });
+        } catch (error) {
+            console.error("Erro ao finalizar SOS:", error);
+        }
     }
 
     useEffect(() => {
         loadAudio();
 
-        function updateNotification() {
-            Axios.api.get("alert/wait").then((response: AxiosResponse) => {
+        async function updateNotification() {
+            try {
+                const response: AxiosResponse = await Axios.api.get("alert/wait");
                 if (response.data.alerts.length > 0) {
                     if (active) {
                         playAudio();
@@ -101,52 +115,60 @@ function alertProvider({ children }: LocationProviderInterface) {
                     } else {
                         setShowMap(false);
                     }
-                    viewRef.current?.animateMarkerToCoordinate(
-                        {
-                            latitude: Number(response.data.alerts[0].lat),
-                            longitude: Number(response.data.alerts[0].log),
-                        },
-                        0
-                    );
-                    mapViewRef.current?.animateCamera(
-                        {
-                            center: {
+
+                    // Atualiza o mapa se houver coordenadas
+                    if (viewRef.current && mapViewRef.current) {
+                        viewRef.current?.animateMarkerToCoordinate(
+                            {
                                 latitude: Number(response.data.alerts[0].lat),
                                 longitude: Number(response.data.alerts[0].log),
-                                latitudeDelta: 0.006,
-                                longitudeDelta: 0.006,
                             },
-                        },
-                        {
-                            duration: 0,
-                        }
-                    );
+                            0
+                        );
+                        mapViewRef.current?.animateCamera(
+                            {
+                                center: {
+                                    latitude: Number(response.data.alerts[0].lat),
+                                    longitude: Number(response.data.alerts[0].log),
+                                    latitudeDelta: 0.006,
+                                    longitudeDelta: 0.006,
+                                },
+                            },
+                            {
+                                duration: 0,
+                            }
+                        );
+                    }
                 }
-            });
+            } catch (error) {
+                console.error("Erro ao atualizar notificações:", error);
+            }
         }
 
         if (Axios.load) {
             console.log("alerta procurando");
             messaging()
                 .requestPermission()
-                .then(() => {
-                    messaging().getToken().then(handleSendPushToken);
-                });
+                .then(() => messaging().getToken())
+                .then(handleSendPushToken);
 
+            // Primeira atualização imediata
             updateNotification();
+
+            // Atualização periódica
             const intervalId = setInterval(updateNotification, 10000);
 
             return () => {
                 clearInterval(intervalId);
-                sound?.unloadAsync();
+                if (sound) sound.unloadAsync(); // Libera recursos de áudio
             };
         }
-    }, [Axios.load]);
+    }, [Axios.load, active]);
 
     return (
         <AlertContext.Provider
             value={{
-                // Adicione qualquer valor para compartilhar aqui
+                // Adicione valores para compartilhar, se necessário
             }}
         >
             <AlerModal
@@ -167,4 +189,4 @@ function alertProvider({ children }: LocationProviderInterface) {
     );
 }
 
-export default alertProvider;
+export default AlertProvider;

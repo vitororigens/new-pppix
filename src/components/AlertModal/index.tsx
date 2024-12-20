@@ -57,8 +57,10 @@ export function AlerModal({
   log,
   onClose
 }: EditFieldModalProps) {
+  if(visible === false) return null;
+
   return (
-    <Modal visible={visible} transparent animationType="slide">
+
       <Overlay>
         <Container>
           <Header>
@@ -165,7 +167,6 @@ export function AlerModal({
           </ButtonContainer>
         </Container>
       </Overlay>
-    </Modal>
   );
 }
 

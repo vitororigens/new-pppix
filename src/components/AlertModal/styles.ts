@@ -8,6 +8,8 @@ export const Overlay = styled.View`
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5); 
   padding: 40px;
+  z-index: 999;
+  position: absolute;
 `;
 
 

@@ -34,18 +34,30 @@ export default function Verification() {
 
             setPassword("");
         } else if (password == authData?.passwordEmergecy) {
+            
             api.post('alert/create')
                 .then(() => {
-                    openBank()
+                    console.log('entrou')
+                    setSecurityMode(false);
                 })
 
         } else if (password == authData?.passwordDevice) {
             BackHandler.exitApp();
         } else if (password == authData?.passwordDeviceEmergency) {
             api.post('alert/create')
-                .then(() => {
-                    BackHandler.exitApp();
-                })
+            .then(() => {
+                console.log('Alerta criado com sucesso');
+                setSecurityMode(false);
+            })
+            .catch(error => {
+                console.error('Erro ao criar alerta:', error);
+                Toast.show("Erro ao criar alerta", {
+                    type: "danger",
+                    duration: 3000,
+                    placement: "top",
+                });
+            });
+        
         } else {
 
             Toast.show("Senha incorreta", {
@@ -66,7 +78,7 @@ export default function Verification() {
         <Container>
             <Animated.View
                 style={[{
-                    flexDirection: 'row',
+                    flexDirection: 'column',
                     width: '100%'
                 },
                     animatedStyle

@@ -2,6 +2,7 @@ import { Button } from "../../components/Button";
 import { DefaultContainer } from "../../components/DefaultContainer";
 import { Input } from "../../components/Input";
 import { ItemContact } from "../../components/ItemContact";
+import { ItemNotification } from "../../components/ItemNotification";
 import { Container, Content } from "./styles";
 
 export function Notifications(){
@@ -10,6 +11,7 @@ export function Notifications(){
             <Container>
                 <Input placeholder="Pesquisar" showSearch />
                 <Content>
+                    <ItemNotification/>
                 </Content>
                 <Button title="Limpar"/>
             </Container>

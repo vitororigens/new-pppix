@@ -103,10 +103,15 @@ export function Groups() {
     }
   }
 
+  console.log(groups)
 
-  const filteredGroups = groups.filter((group) =>
-    group.group_name.toLowerCase().includes(search.toLowerCase())
+  const filteredGroups = groups.filter(
+    (group) =>
+      group.group_name?.toLowerCase().includes(search.toLowerCase()) ||
+      (!group.group_name && search === "")
   );
+  
+  
 
   return (
     <DefaultContainer title="Grupos" showMenu showButtonBack>
