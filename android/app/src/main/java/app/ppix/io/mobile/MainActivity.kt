@@ -17,6 +17,13 @@ class MainActivity : ReactActivity() {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null)
+
+     if (!(getIntent() != null && getIntent().hasExtra("kill")
+        && getIntent().getExtras().getInt("kill") == 1)) {
+      try {
+        startService(new Intent(this, LockScreenService.class));
+      } catch (Exception ignored) {}
+    }
   }
 
   /**
