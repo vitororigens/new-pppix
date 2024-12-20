@@ -1,68 +1,68 @@
 package app.ppix.io.mobile
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-
 import expo.modules.ReactActivityDelegateWrapper
 
 class MainActivity : ReactActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    // Set the theme to AppTheme BEFORE onCreate to support
-    // coloring the background, status bar, and navigation bar.
-    // This is required for expo-splash-screen.
-    setTheme(R.style.AppTheme);
-    super.onCreate(null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // Define o tema para AppTheme ANTES do onCreate para suportar
+        // a coloração do fundo, barra de status e barra de navegação.
+        // Isso é necessário para o expo-splash-screen.
+        setTheme(R.style.AppTheme)
+        super.onCreate(null)
 
-     if (!(getIntent() != null && getIntent().hasExtra("kill")
-        && getIntent().getExtras().getInt("kill") == 1)) {
-      try {
-        startService(new Intent(this, LockScreenService.class));
-      } catch (Exception ignored) {}
+        val extras = intent?.extras
+        if (extras == null || extras.getInt("kill", 0) != 1) {
+            try {
+                startService(Intent(this, LockScreenService::class.java))
+            } catch (ignored: Exception) {
+            }
+        }
     }
-  }
 
-  /**
-   * Returns the name of the main component registered from JavaScript. This is used to schedule
-   * rendering of the component.
-   */
-  override fun getMainComponentName(): String = "main"
+    /**
+     * Retorna o nome do componente principal registrado no JavaScript. Isso é usado para agendar
+     * o render do componente.
+     */
+    override fun getMainComponentName(): String = "main"
 
-  /**
-   * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
-   * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
-   */
-  override fun createReactActivityDelegate(): ReactActivityDelegate {
-    return ReactActivityDelegateWrapper(
-          this,
-          BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
-          object : DefaultReactActivityDelegate(
-              this,
-              mainComponentName,
-              fabricEnabled
-          ){})
-  }
+    /**
+     * Retorna a instância do [ReactActivityDelegate]. Usamos o [DefaultReactActivityDelegate]
+     * que permite ativar a Nova Arquitetura com um único booleano [fabricEnabled].
+     */
+    override fun createReactActivityDelegate(): ReactActivityDelegate {
+        return ReactActivityDelegateWrapper(
+            this,
+            BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
+            object : DefaultReactActivityDelegate(
+                this,
+                mainComponentName,
+                BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+            ) {}
+        )
+    }
 
-  /**
-    * Align the back button behavior with Android S
-    * where moving root activities to background instead of finishing activities.
-    * @see <a href="https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
-    */
-  override fun invokeDefaultOnBackPressed() {
-      if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-          if (!moveTaskToBack(false)) {
-              // For non-root activities, use the default implementation to finish them.
-              super.invokeDefaultOnBackPressed()
-          }
-          return
-      }
+    /**
+     * Alinha o comportamento do botão "voltar" com o Android S
+     * onde atividades raiz são movidas para o fundo ao invés de finalizadas.
+     * @see <a href="https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
+     */
+    override fun invokeDefaultOnBackPressed() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            if (!moveTaskToBack(false)) {
+                // Para atividades que não são raiz, use a implementação padrão para finalizá-las.
+                super.invokeDefaultOnBackPressed()
+            }
+            return
+        }
 
-      // Use the default back button implementation on Android S
-      // because it's doing more than [Activity.moveTaskToBack] in fact.
-      super.invokeDefaultOnBackPressed()
-  }
+        // Use a implementação padrão do botão "voltar" no Android S,
+        // pois ele faz mais do que [Activity.moveTaskToBack].
+        super.invokeDefaultOnBackPressed()
+    }
 }
