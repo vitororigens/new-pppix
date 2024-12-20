@@ -9,7 +9,7 @@ import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
 import { AlerModal } from "../components/AlertModal";
 
-interface AlertInterface {}
+interface AlertInterface { }
 
 interface LocationProviderInterface {
     children: React.ReactNode;
@@ -31,7 +31,7 @@ function alertProvider({ children }: LocationProviderInterface) {
         },
     });
     const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [showModal, setShowModal] = useState(true);
+    const [showModal, setShowModal] = useState(false);
     const [showMap, setShowMap] = useState(false);
     const [active, setActive] = useState(true);
     const Axios = useContext(AxiosContext);
@@ -42,7 +42,7 @@ function alertProvider({ children }: LocationProviderInterface) {
     async function loadAudio() {
         try {
             const { sound } = await Audio.Sound.createAsync(
-                require("../assets/alerta.mp3") // Substitua pelo caminho do arquivo MP3
+                require("../assets/alerta.mp3")
             );
             setSound(sound);
         } catch (error) {
@@ -150,10 +150,17 @@ function alertProvider({ children }: LocationProviderInterface) {
             }}
         >
             <AlerModal
-            name="Vitor Abreu"
-            email="vitorabreufjb@hotmail.com"
-            phone="(61) 9 9996-3955"
-            visible={showModal}
+                name={alertData.email}
+                email={alertData.email}
+                phone="(61) 9 9996-3955"
+                car={alertData.car}
+                buttonEncerra={handleFinishSos}
+                buttonFecha={() => setShowModal(false)}
+                buttonSOSPolicia={handleSosPolice}
+                lat={alertData.lat}
+                log={alertData.log}
+                visible={showModal}
+                onClose={() => setShowModal(false)}
             />
             {children}
         </AlertContext.Provider>

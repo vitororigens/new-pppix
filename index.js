@@ -1,97 +1,84 @@
 import { registerRootComponent } from 'expo';
-import { Linking } from 'react-native';
 import App from './App';
+import messaging from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
+import { Linking } from 'react-native';
 
-
-// Helper to request notification permissions
-async function requestPermissions() {
-  try {
-    const authStatus = await messaging.requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Notification permissions granted:', authStatus);
-    } else {
-      console.warn('Notification permissions not granted.');
+// Função para criar canal de notificação
+async function createChannel() {
+    try {
+        await notifee.createChannel({
+            id: 'som',
+            name: 'Som de Alerta',
+            sound: 'alerta', // Certifique-se de que o arquivo de som está configurado corretamente no Android
+            importance: notifee.AndroidImportance.HIGH,
+        });
+        console.log('Canal de notificação criado com sucesso');
+    } catch (error) {
+        console.error('Erro ao criar o canal de notificação:', error);
     }
-  } catch (error) {
-    console.error('Error requesting notification permissions:', error);
-  }
 }
 
-// Create notification channel
-async function createNotificationChannel() {
-  try {
-    await notifee.createChannel({
-      id: 'som',
-      name: 'Alerta de Emergência',
-      sound: 'alerta',
-    });
-    console.log('Notification channel created');
-  } catch (error) {
-    console.error('Error creating notification channel:', error);
-  }
-}
-
-// Handle background notification events
-async function handleBackgroundNotification(remoteMessage) {
-  try {
-    await notifee.displayNotification({
-      title: `Atenção ${remoteMessage.data.email}`,
-      body: 'Novo alerta de emergência',
-      android: {
-        channelId: 'som',
-        sound: 'alerta',
-        pressAction: {
-          launchActivity: 'app.ppix.io.mobile.MainActivity',
-          id: 'default',
-        },
-        actions: [
-          {
-            title: 'Ligar para polícia',
-            pressAction: {
-              id: 'call_police',
-            },
-          },
-        ],
-      },
-    });
-  } catch (error) {
-    console.error('Error displaying background notification:', error);
-  }
-}
-
-// Handle background Notifee events
-async function handleBackgroundNotifeeEvent({ type, detail }) {
-  const { notification, pressAction } = detail;
-  try {
-    if (type === EventType.ACTION_PRESS && pressAction.id === 'call_police') {
-      notifee.hideNotificationDrawer();
-      Linking.openURL('tel:190');
+// Handler para eventos em segundo plano
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+    const { pressAction } = detail;
+    if (type === EventType.ACTION_PRESS && pressAction.id === 'snooze') {
+        try {
+            notifee.hideNotificationDrawer();
+            Linking.openURL('tel:190'); // Liga para a polícia
+            console.log('Ação de botão de notificação executada');
+        } catch (error) {
+            console.error('Erro ao processar evento em segundo plano:', error);
+        }
     }
-  } catch (error) {
-    console.error('Error handling Notifee event:', error);
-  }
-}
+});
 
-// Register background message handlers
-function registerBackgroundHandlers() {
-  messaging.setBackgroundMessageHandler(handleBackgroundNotification);
-  notifee.onBackgroundEvent(handleBackgroundNotifeeEvent);
-}
+// Handler para mensagens de segundo plano
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    try {
+        console.log('Mensagem recebida no background:', remoteMessage);
+        if (remoteMessage?.data) {
+            await notifee.displayNotification({
+                title: `Atenção ${remoteMessage.data.email}`,
+                body: 'Novo alerta de emergência',
+                android: {
+                    channelId: 'som',
+                    sound: 'alerta',
+                    pressAction: {
+                        id: 'default',
+                    },
+                    actions: [
+                        {
+                            title: 'Ligar para polícia',
+                            pressAction: { id: 'snooze' },
+                        },
+                    ],
+                },
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao exibir notificação no background:', error);
+    }
+});
 
-// Main setup function
-async function setupNotifications() {
-  await requestPermissions();
-  await createNotificationChannel();
-  registerBackgroundHandlers();
-}
+// Inicializa as configurações e registra o app
+(async () => {
+    try {
+        await createChannel();
 
-// Initialize notifications
-setupNotifications();
+        // Solicita permissões de notificação, se necessário
+        const authStatus = await messaging().hasPermission();
+        if (authStatus === messaging.AuthorizationStatus.NOT_DETERMINED) {
+            await messaging().requestPermission();
+            console.log('Permissões de notificação solicitadas');
+        }
 
-// Register the root component
+        const token = await messaging().getToken();
+        console.log('Token de dispositivo FCM:', token);
+
+    } catch (error) {
+        console.error('Erro durante a inicialização:', error);
+    }
+})();
+
 registerRootComponent(App);

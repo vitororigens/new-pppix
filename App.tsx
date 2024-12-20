@@ -19,6 +19,7 @@ import LocationProvider from "./src/contexts/LocationContext";
 import AlertProvider from "./src/contexts/AlertContext";
 import firebase from "firebase/compat";
 import { firebaseConfig } from "./src/services";
+import axios from 'axios'
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -27,15 +28,18 @@ export default function App() {
     Montserrat_700Bold,
   });
 
-  
-// Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
-  console.log("Firebase inicializado");
 } else {
-  firebase.app(); // Usa o app já inicializado
-  console.log("Firebase já inicializado");
+  firebase.app(); 
 }
+
+axios.interceptors.request.use((config: any) => {
+  // add token to request headers
+  config.headers['Authorization'] = `Bearer 9|M3nVur2gF9gcHup8UXueM9Ojjc912dVYAEL78gXn`;
+  return config;
+});
+
 
   return (
     <NavigationContainer>

@@ -60,8 +60,6 @@ export const TextColor = styled.Text`
 
 export const ContentItems = styled.View`
     width: 100%;
-    align-items: center;
-    justify-content: center;
     flex: 1;
 `;
 

@@ -13,8 +13,8 @@ import { TextInput } from "react-native";
 const formSchema = z.object({
   code: z
     .string()
-    .min(6, "Preencha todos os dígitos.")
-    .regex(/^\d{6}$/, "Código inválido. Use apenas números."),
+    .min(4, "Preencha todos os dígitos.")
+    .regex(/^\d{4}$/, "Código inválido. Use apenas números."),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
@@ -66,7 +66,7 @@ export function Verify() {
 
       setValue("code", updatedCode);
 
-      if (value && index < 5) {
+      if (value && index < 3) {
         inputRefs.current[index + 1]?.focus();
       }
     }
@@ -97,7 +97,7 @@ export function Verify() {
             name="code"
             render={() => (
               <>
-                {Array.from({ length: 6 }).map((_, index) => (
+                {Array.from({ length: 4 }).map((_, index) => (
                   <Input
                     key={index}
                     ref={(ref) => (inputRefs.current[index] = ref)}

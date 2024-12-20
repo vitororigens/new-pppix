@@ -1,14 +1,13 @@
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Verification from "../screens/Verification";
 
-// import Verification from "../screens/Verification";
 
+const Stack = createNativeStackNavigator();
 
-// const Stack = createNativeStackNavigator();
-
-// export function VerificationRoutes() {
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-//       <Stack.Screen name="Verification" component={Verification} />
-//     </Stack.Navigator>
-//   );
-// }
+export function VerificationRoutes() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Verification" component={Verification} />
+    </Stack.Navigator>
+  );
+}
