@@ -11,7 +11,7 @@ type PortraitCardProps = {
 export function SecurityCard({icon, subTitle, title}: PortraitCardProps){
     return(
         <Container>
-            <IconApp source={{uri: icon}} />
+            <IconApp source={{uri: `data:image/png;base64,${icon}`}} /> 
             <Content>
                 <Items>
                     <Title>{title}</Title>
