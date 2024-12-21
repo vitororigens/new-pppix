@@ -31,7 +31,7 @@ function AlertProvider({ children }: LocationProviderInterface) {
         },
     });
     const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [showModal, setShowModal] = useState(true);
+    const [showModal, setShowModal] = useState(false);
     const [showMap, setShowMap] = useState(false);
     const [active, setActive] = useState(true);
     const Axios = useContext(AxiosContext);
