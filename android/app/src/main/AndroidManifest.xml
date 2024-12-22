@@ -14,6 +14,15 @@
   <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.ACTION_SCREEN_ON"/>
+  <uses-permission android:name="android.permission.ACTION_SCREEN_OFF"/>
+  <uses-permission android:name="android.permission.ACTION_USER_PRESENT"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
 
   <queries>
     <intent>
@@ -23,6 +32,19 @@
     </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
+   <service
+        android:name=".LockScreenService"
+        android:foregroundServiceType="connectedDevice"
+        android:exported="false" />
+
+    <!-- LockScreenIntentReceiver -->
+    <receiver android:name="app.ppix.io.mobile.LockScreenIntentReceiver" android:enabled="true" android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.SCREEN_ON" />
+            <action android:name="android.intent.action.SCREEN_OFF" />
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+    </receiver>
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCH-5KSV9GW44FSSV9DtWbRdejEMx-rZRg"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
