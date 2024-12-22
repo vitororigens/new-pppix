@@ -19,7 +19,12 @@ import LocationProvider from "./src/contexts/LocationContext";
 import AlertProvider from "./src/contexts/AlertContext";
 import firebase from "firebase/compat";
 import { firebaseConfig } from "./src/services";
+<<<<<<< HEAD
 import { GroupProvider } from "./src/contexts/useGroups";
+=======
+import { useEffect } from "react";
+import { OneSignal } from "react-native-onesignal";
+>>>>>>> 6644b80 (add one signal and move notifications for front)
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -33,6 +38,13 @@ export default function App() {
   } else {
     firebase.app();
   }
+
+useEffect(() => {
+  OneSignal.initialize("4952e39a-7818-41e7-b4c8-45164fe19b73");
+
+
+  OneSignal.Notifications.requestPermission(true);
+}, []);
 
   return (
     <NavigationContainer>

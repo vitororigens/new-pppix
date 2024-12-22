@@ -33,17 +33,16 @@
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
    <service
-        android:name=".LockScreenService"
-        android:foregroundServiceType="connectedDevice"
-        android:exported="false" />
+        android:name=".LockScreenService" />
 
     <!-- LockScreenIntentReceiver -->
-    <receiver android:name="app.ppix.io.mobile.LockScreenIntentReceiver" android:enabled="true" android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.SCREEN_ON" />
-            <action android:name="android.intent.action.SCREEN_OFF" />
-            <action android:name="android.intent.action.BOOT_COMPLETED" />
-        </intent-filter>
+    <receiver 
+      android:name="app.ppix.io.mobile.LockScreenIntentReceiver"
+      android:enabled="true"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
     </receiver>
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCH-5KSV9GW44FSSV9DtWbRdejEMx-rZRg"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>

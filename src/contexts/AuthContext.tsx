@@ -4,6 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState } from "react-native";
 import api from "../config/Axios";
 import {Toast} from "react-native-toast-notifications";
+import useSendNotifications from "../hooks/useSendNotifications";
+import { OneSignal } from "react-native-onesignal";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -42,7 +44,8 @@ export interface AuthData {
   passwordDevice: string;
   passwordDeviceEmergency: string;
   user: User;
-  car_id: string;
+  car_id: string; 
+  subscriberId: string;
 }
 
 export interface AuthContextDataProps {
@@ -71,6 +74,31 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [userLogged, setUserLogged] = useState(false);
   const [securityMode, setSecurityMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
+  const { subscriptionId, playerId } = useSendNotifications();
+
+// Remove the logic of saving subscriberId in authData
+useEffect(() => {
+  if (authData && subscriptionId) {
+    // Pass the token to OneSignal (not saving it in authData anymore)
+    sendTokenToOneSignal(authData.token, subscriptionId);
+  }
+}, [authData, subscriptionId]);
+
+const sendTokenToOneSignal = async (token: string, subscriptionId: string) => {
+  if (token && subscriptionId) {
+    try {
+      // Set subscriptionId as an alias for the token
+      // Pass 'subscription' as the label and the subscriptionId as the id
+      await OneSignal.User.addAlias('subscription', token);
+      console.log("Alias 'subscription' enviado para OneSignal com ID:", token);
+    } catch (error) {
+      console.error("Erro ao enviar alias para OneSignal:", error);
+    }
+  }
+};
+
+
 
   useEffect(() => {
     const fetchData = async () => {
