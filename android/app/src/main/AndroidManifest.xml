@@ -32,7 +32,11 @@
     </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
-   <service
+  <meta-data
+    android:name="com.onesignal.NotificationSound"
+    android:resource="@raw/alerta" />
+
+  <service
         android:name=".LockScreenService" />
 
     <!-- LockScreenIntentReceiver -->
