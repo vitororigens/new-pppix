@@ -53,6 +53,13 @@ const useSendNotifications = () => {
       include_player_ids: data.subscriptionsIds,
       headings: { en: data.title },
       contents: { en: data.message },
+      android_sound: "alerta", 
+      buttons: [
+        {
+          "id": "send_sos",
+          "text": "Ligar para polícia",
+        },
+      ]
     };
 
     try {

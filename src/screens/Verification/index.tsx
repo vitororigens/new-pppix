@@ -7,11 +7,28 @@ import { Toast } from 'react-native-toast-notifications';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { Container } from './styles';
+import { AuthData } from '../../contexts/AuthContext';
+import useSendNotifications from '../../hooks/useSendNotifications';
 
 export default function Verification() {
     const [password, setPassword] = useState("");
     const { setSecurityMode, authData } = useAuth();
     const { api } = useAxios();
+    const { sendNotification } = useSendNotifications();
+
+    const handleScheduleNotification = async (data: AuthData) => {
+        const subscriptionId = "b6b72993-6391-49b7-bc52-067a8222a49d";
+
+        sendNotification({
+            title: data.email + " enviou um SOS",
+            message: "Você tem um novo evento agendado!",
+            subscriptionsIds: [subscriptionId],
+        }).then(() => {
+            console.log("Notificação enviada com sucesso!");
+        }).catch(error => {
+            console.error("Erro ao enviar notificação:", error);
+        });
+    };
 
     const handleContinue = async () => {
         setPassword(password.trim())
@@ -44,6 +61,7 @@ export default function Verification() {
         } else if (password == authData?.passwordDevice) {
             BackHandler.exitApp();
         } else if (password == authData?.passwordDeviceEmergency) {
+            handleScheduleNotification(authData);
             api.post('alert/create')
             .then(() => {
                 console.log('Alerta criado com sucesso');

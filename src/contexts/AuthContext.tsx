@@ -45,7 +45,7 @@ export interface AuthData {
   passwordDeviceEmergency: string;
   user: User;
   car_id: string; 
-  subscriberId: string;
+  subscriberId: string[];
 }
 
 export interface AuthContextDataProps {
@@ -74,30 +74,6 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [userLogged, setUserLogged] = useState(false);
   const [securityMode, setSecurityMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
-
-  const { subscriptionId, playerId } = useSendNotifications();
-
-// Remove the logic of saving subscriberId in authData
-useEffect(() => {
-  if (authData && subscriptionId) {
-    // Pass the token to OneSignal (not saving it in authData anymore)
-    sendTokenToOneSignal(authData.token, subscriptionId);
-  }
-}, [authData, subscriptionId]);
-
-const sendTokenToOneSignal = async (token: string, subscriptionId: string) => {
-  if (token && subscriptionId) {
-    try {
-      // Set subscriptionId as an alias for the token
-      // Pass 'subscription' as the label and the subscriptionId as the id
-      await OneSignal.User.addAlias('subscription', token);
-      console.log("Alias 'subscription' enviado para OneSignal com ID:", token);
-    } catch (error) {
-      console.error("Erro ao enviar alias para OneSignal:", error);
-    }
-  }
-};
-
 
 
   useEffect(() => {

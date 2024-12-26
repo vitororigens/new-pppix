@@ -23,9 +23,6 @@ export function Cars() {
       .get("car")
       .then((response) => {
         setCars(response.data.cars || []);
-        if (authData?.car_id) {
-          setSelectedCar(String(authData.car_id));
-        }
       })
       .catch((error) => {
         console.error("Erro ao carregar carros:", error);
@@ -35,6 +32,16 @@ export function Cars() {
   useEffect(() => {
     updateCars();
   }, []);
+
+  useEffect(() => {
+    if (authData?.car_id && cars.length > 0) {
+      const carId = String(authData.car_id); 
+      const carExists = cars.some(car => String(car.id) === carId);
+      if (carExists) {
+        setSelectedCar(carId);
+      }
+    }
+  }, [authData, cars]);
 
   function handleDeleteCar(car_id: string) {
     api
@@ -105,7 +112,7 @@ export function Cars() {
               licensePlate={car.licensePlate}
               onDelete={() => handleDeleteCar(car.id)}
               onToggle={() => setSelectedCar(car.id)}
-              isChecked={selectedCar === car.id}
+              isChecked={String(selectedCar) === String(car.id)}
             />
           ))}
         </Content>
