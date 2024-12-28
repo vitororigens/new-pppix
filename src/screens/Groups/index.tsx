@@ -1,117 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DefaultContainer } from "../../components/DefaultContainer";
 import { GroupCard } from "../../components/GroupCard";
 import { Input } from "../../components/Input";
 import { ItemGroup } from "../../components/ItemGroup";
-import { useAuth } from "../../hooks/useAuth";
-import { useAxios } from "../../hooks/useAxios";
-import { Container } from "./styles";
 import { Toast } from "react-native-toast-notifications";
 import { EditFieldModal } from "../../components/EditFieldModal";
 import { ScrollView } from "react-native";
+import { Container } from "./styles";
+import { useGroups } from "../../contexts/useGroups";
 
-interface UserData {
-  email: string;
-  phone: string;
-}
-
-interface GroupData {
-  group_name: string;
-  email: string;
-  phone: string;
-  leader_id: string;
-  users: UserData[];
-}
 
 export function Groups() {
-  const { api } = useAxios();
-  const { authData } = useAuth();
-  const [groups, setGroups] = useState<GroupData[]>([]);
+  const { groups, loading, updateGroups, handleSaveGroup, handleExitGroup } = useGroups(); // Usando o contexto
   const [editName, setEditName] = useState("");
   const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  async function updateGroups() {
-    try {
-      const response = await api.get('/group');
-      setGroups(response.data.groups);
-    } catch (error) {
-      console.error('Erro ao obter grupos:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    updateGroups();
-  }, []);
-
-  useEffect(() => {
-    if (modalVisible) {
-      const groupToEdit = groups.find((group) => group.group_name === editName);
-      if (groupToEdit) {
-        setEditName(groupToEdit.group_name);
-      }
-    }
-  }, [modalVisible, groups]);
-  
-
-  function handleEditGroup(email: string, groupIndex: number) {
-    if (authData?.email === email) {
-      setEditName(groups[groupIndex].group_name);
-      setModalVisible(true);
-    }
-  }
-
-  async function handleSaveGroup() {
-    try {
-      console.log("Payload enviado:", { name: editName });
-      await api.post("/group/update", { name: editName });
-      await updateGroups();
-      setModalVisible(false);
-      Toast.show("Nome alterado com sucesso!", {
-        placement: "top",
-        duration: 3000,
-        type: "success",
-      });
-    } catch (error) {
-      console.error("Erro ao salvar grupo:", error);
-    }
-  }
-
-
-  async function handleExitGroup(leader_id: string) {
-    try {
-      await api.post('/group/exit', { leader_id: leader_id });
-
-      updateGroups();
-
-      Toast.show("Você saiu do grupo!", {
-        placement: "top",
-        duration: 3000,
-        type: "success",
-      });
-    } catch (error) {
-      console.error("Erro ao sair do grupo:", error);
-
-      Toast.show("Erro ao sair do grupo.", {
-        placement: "top",
-        duration: 3000,
-        type: "danger",
-      });
-    }
-  }
-
-  console.log(groups)
 
   const filteredGroups = groups.filter(
     (group) =>
       group.group_name?.toLowerCase().includes(search.toLowerCase()) ||
       (!group.group_name && search === "")
   );
-  
-  
+
+  const handleEditGroup = (groupName: string) => {
+    setEditName(groupName);
+    setModalVisible(true);
+  };
 
   return (
     <DefaultContainer title="Grupos" showMenu showButtonBack>
@@ -123,23 +37,19 @@ export function Groups() {
           showSearch
         />
 
-        {filteredGroups.map((group, index) => (
-          <GroupCard 
-            key={group.leader_id} 
-            title={group.group_name} 
-            onEdit={() => handleEditGroup(group.email, index)}
+        {filteredGroups.map((group) => (
+          <GroupCard
+            key={group.leader_id}
+            title={group.group_name}
+            onEdit={() => handleEditGroup(group.group_name)}
           >
             <ItemGroup
               id={group.leader_id}
               onDelete={() => handleExitGroup(group.leader_id)}
-              subTitle={`Você(${authData?.email === group.email ? "Admin" : "Membro"})`}
+              subTitle={`Você(${group.email === 'user@example.com' ? 'Admin' : 'Membro'})`} // Altere conforme sua lógica de autenticação
               phone={group.phone}
             />
-
-            <ScrollView
-              style={{ maxHeight: 200 }}
-              nestedScrollEnabled 
-            >
+            <ScrollView style={{ maxHeight: 200 }} nestedScrollEnabled>
               {group.users.map((user) => (
                 <ItemGroup
                   key={user.email}
@@ -156,10 +66,18 @@ export function Groups() {
 
       <EditFieldModal
         value={editName}
-        setValue={(text) => setEditName(text)}
+        setValue={setEditName}
         field="nome do grupo"
         onClose={() => setModalVisible(false)}
-        onSubmit={handleSaveGroup} 
+        onSubmit={() => {
+          handleSaveGroup(editName);
+          setModalVisible(false);
+          Toast.show("Nome alterado com sucesso!", {
+            placement: "top",
+            duration: 3000,
+            type: "success",
+          });
+        }}
         visible={modalVisible}
       />
     </DefaultContainer>
