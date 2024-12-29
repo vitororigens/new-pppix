@@ -45,7 +45,7 @@ export interface AuthData {
   passwordDeviceEmergency: string;
   user: User;
   car_id: string; 
-  subscriberId: string[];
+  subscribed: string;
 }
 
 export interface AuthContextDataProps {
@@ -74,6 +74,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [userLogged, setUserLogged] = useState(false);
   const [securityMode, setSecurityMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const { subscriptionId } = useSendNotifications();
 
 
   useEffect(() => {
@@ -195,18 +196,36 @@ function AuthProvider({ children }: AuthProviderProps) {
             'Authorization': `Bearer ${data.token}`
           }
         });
-
+  
+        let updatedsubscribed = response.data.user.subscribed || [];
+        
+        // Verifica e atualiza subscribed, caso necessário
+        if (!updatedsubscribed.length && subscriptionId) {
+          updatedsubscribed = [subscriptionId];
+          console.log("Atualizando subscribed com:", subscriptionId);
+          await api.put(
+            "auth/update-subscriber",
+            { subscribed: updatedsubscribed },
+            {
+              headers: {
+                'Authorization': `Bearer ${data.token}`
+              }
+            }
+          );
+        }
+  
         setUserLogged(true);
         setAuthData({
           token: data.token,
           ...response.data.user,
+          subscribed: updatedsubscribed,
           passwordApp: response.data.user.passwordApp || '',
           passwordEmergecy: response.data.user.passwordEmergecy || '',
           passwordBank: response.data.user.passwordBank || '',
           passwordDevice: response.data.user.passwordDevice || '',
           passwordDeviceEmergency: response.data.user.passwordDeviceEmergency || ''
         });
-
+  
         if (
           response.data.user.passwordApp !== '' &&
           response.data.user.passwordEmergecy !== '' &&
@@ -226,6 +245,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       console.error("Erro ao verificar autenticação:", error);
     }
   }
+  
 
   return (
     <AuthContext.Provider
