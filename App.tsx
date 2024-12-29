@@ -19,7 +19,6 @@ import LocationProvider from "./src/contexts/LocationContext";
 import AlertProvider from "./src/contexts/AlertContext";
 import firebase from "firebase/compat";
 import { firebaseConfig } from "./src/services";
-import { GroupProvider } from "./src/contexts/useGroups";
 
 export default function App() {
   const [fontLoader] = useFonts({
@@ -28,11 +27,11 @@ export default function App() {
     Montserrat_700Bold,
   });
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  } else {
-    firebase.app();
-  }
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); 
+}
 
   return (
     <NavigationContainer>

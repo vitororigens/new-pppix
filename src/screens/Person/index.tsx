@@ -10,14 +10,15 @@ import { Toast } from "react-native-toast-notifications";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { View } from "react-native";
 
 // Esquema de validação com Zod
 const schema = z.object({
-  passwordEmergecy: z.string().min(6, "A senha de emergência deve ter pelo menos 6 caracteres."),
-  passwordBank: z.string().min(6, "A senha do banco deve ter pelo menos 6 caracteres."),
-  passwordApp: z.string().min(6, "A senha do app deve ter pelo menos 6 caracteres."),
-  passwordDevice: z.string().min(6, "A senha do dispositivo deve ter pelo menos 6 caracteres."),
-  passwordDeviceEmergency: z.string().min(6, "A senha de emergência do dispositivo deve ter pelo menos 6 caracteres."),
+  passwordEmergecy: z.string().min(6, "A senha de emergência deve ter pelo menos 6 caracteres.").optional(),
+  passwordBank: z.string().min(6, "A senha do banco deve ter pelo menos 6 caracteres.").optional(),
+  passwordApp: z.string().min(6, "A senha do app deve ter pelo menos 6 caracteres.").optional(),
+  passwordDevice: z.string().min(6, "A senha do dispositivo deve ter pelo menos 6 caracteres.").optional(),
+  passwordDeviceEmergency: z.string().min(6, "A senha de emergência do dispositivo deve ter pelo menos 6 caracteres.").optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -71,81 +72,84 @@ export function Person() {
         <PersonCard icon="phone" title="Telefone" subTitle={authData?.phone} />
         <Content>
           <Title>Suas Senhas</Title>
-          <SubTitle>Senha emergência</SubTitle>
-          <Controller
-            control={control}
-            name="passwordEmergecy"
-            render={({ field: { onChange, value } }) => (
-              <>
-                <Input
-                  placeholder="Cadastre sua senha de emergência"
-                  value={value}
-                  onChangeText={onChange}
-                />
-                {errors.passwordEmergecy && <TextError>{errors.passwordEmergecy.message}</TextError>}
-              </>
-            )}
-          />
-          <SubTitle>Senha banco</SubTitle>
-          <Controller
-            control={control}
-            name="passwordBank"
-            render={({ field: { onChange, value } }) => (
-              <>
-                <Input
-                  placeholder="Cadastre sua senha de banco"
-                  value={value}
-                  onChangeText={onChange}
-                />
-                {errors.passwordBank && <TextError>{errors.passwordBank.message}</TextError>}
-              </>
-            )}
-          />
-          <SubTitle>Senha APP</SubTitle>
-          <Controller
-            control={control}
-            name="passwordApp"
-            render={({ field: { onChange, value } }) => (
-              <>
-                <Input
-                  placeholder="Cadastre sua senha do app"
-                  value={value}
-                  onChangeText={onChange}
-                />
-                {errors.passwordApp && <TextError>{errors.passwordApp.message}</TextError>}
-              </>
-            )}
-          />
-          <SubTitle>Senha Dispositivo</SubTitle>
+          <SubTitle>Senha Celular</SubTitle>
           <Controller
             control={control}
             name="passwordDevice"
             render={({ field: { onChange, value } }) => (
-              <>
+              <View>
                 <Input
                   placeholder="Cadastre sua senha do dispositivo"
-                  value={value}
+                  value={value || ""}
                   onChangeText={onChange}
                 />
                 {errors.passwordDevice && <TextError>{errors.passwordDevice.message}</TextError>}
-              </>
+              </View>
             )}
           />
-          <SubTitle>Senha Emergência Dispositivo</SubTitle>
+           <SubTitle>Senha Celular Emergência </SubTitle>
           <Controller
             control={control}
             name="passwordDeviceEmergency"
             render={({ field: { onChange, value } }) => (
-              <>
+              <View>
                 <Input
                   placeholder="Cadastre sua senha de emergência do dispositivo"
-                  value={value}
+                  value={value || ""}
                   onChangeText={onChange}
                 />
                 {errors.passwordDeviceEmergency && <TextError>{errors.passwordDeviceEmergency.message}</TextError>}
-              </>
+              </View>
             )}
           />
+          <SubTitle>Senha Banco</SubTitle>
+          <Controller
+            control={control}
+            name="passwordBank"
+            render={({ field: { onChange, value } }) => (
+              <View>
+                <Input
+                  placeholder="Cadastre sua senha de banco"
+                  value={value || ""}
+                  onChangeText={onChange}
+                />
+                {errors.passwordBank && <TextError>{errors.passwordBank.message}</TextError>}
+              </View>
+            )}
+          />
+          <SubTitle>Senha Banco Emergência</SubTitle>
+          <Controller
+            control={control}
+            name="passwordEmergecy"
+            render={({ field: { onChange, value } }) => (
+              <View>
+                <Input
+                  placeholder="Cadastre sua senha de emergência"
+                  value={value || ""}
+                  onChangeText={onChange}
+                />
+                {errors.passwordEmergecy && <TextError>{errors.passwordEmergecy.message}</TextError>}
+              </View>
+            )}
+          />
+          
+          <SubTitle>Senha PPPIX</SubTitle>
+          <Controller
+            control={control}
+            name="passwordApp"
+            render={({ field: { onChange, value } }) => (
+              <View>
+                <Input
+                  placeholder="Cadastre sua senha do app"
+                  value={value || ""}
+                  onChangeText={onChange}
+                />
+                {errors.passwordApp && <TextError>{errors.passwordApp.message}</TextError>}
+              </View>
+            )}
+          />
+         
+         
         </Content>
         <Button title="Salvar" type="PRIMARY" onPress={handleSubmit(onSubmit)} />
       </Container>
