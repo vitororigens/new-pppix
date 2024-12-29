@@ -23,9 +23,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { applyPhoneMask, phoneUnMask } from "../../utils/mask";
+import useSendNotifications from "../../hooks/useSendNotifications";
 
 const formSchema = z
   .object({
+    subscriberId: z.array(z.string()),
     name: z
       .string()
       .min(1, "O nome é obrigatório.")
@@ -61,6 +63,7 @@ export function CreateAccount() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [policyTerms, setPolicyTerms] = useState(false);
+  const {subscriptionId} = useSendNotifications()
   const { signUp } = useAuth();
   const toast = useToast();
 
@@ -76,6 +79,7 @@ export function CreateAccount() {
       email: "",
       password: "",
       confirmPassword: "",
+      subscriberId: [subscriptionId || ""],
     },
   });
 
