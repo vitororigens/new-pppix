@@ -9,13 +9,14 @@ async function signIn(email: string, password: string){
     })
 }
 
-async function signUp(email: string, password: string, phone: string, name: string): Promise<AuthData> {
+async function signUp(email: string, password: string, phone: string, name: string, subscribed: string): Promise<AuthData> {
   return api
     .post("auth/register", {
       name,
       email,
       password,
-      phone
+      phone,
+      subscribed
     })
 }
 

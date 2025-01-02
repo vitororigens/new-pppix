@@ -31,6 +31,8 @@ interface GroupProviderInterface {
 export const GroupProvider = ({ children }: GroupProviderInterface) => {
   const { api } = useAxios();
   const [groups, setGroups] = useState<GroupData[]>([]);
+  console.log(JSON.stringify(groups.map((group) => group.users), null, 2));
+
   const [loading, setLoading] = useState(true);
 
   const updateGroups = async () => {

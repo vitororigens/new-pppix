@@ -16,7 +16,7 @@ import Logo from "../../assets/Logo_pppix.svg";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "react-native-toast-notifications";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +27,7 @@ import useSendNotifications from "../../hooks/useSendNotifications";
 
 const formSchema = z
   .object({
-    subscriberId: z.array(z.string()),
+    subscriberId: z.string().optional(),
     name: z
       .string()
       .min(1, "O nome é obrigatório.")
@@ -57,6 +57,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
+
 type FormSchemaType = z.infer<typeof formSchema>;
 
 export function CreateAccount() {
@@ -64,6 +65,7 @@ export function CreateAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [policyTerms, setPolicyTerms] = useState(false);
   const {subscriptionId} = useSendNotifications()
+  console.log('subscriptionId', subscriptionId)
   const { signUp } = useAuth();
   const toast = useToast();
 
@@ -71,6 +73,7 @@ export function CreateAccount() {
     control,
     handleSubmit,
     formState: { errors },
+    setValue, 
   } = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,12 +82,19 @@ export function CreateAccount() {
       email: "",
       password: "",
       confirmPassword: "",
-      subscriberId: [subscriptionId || ""],
+      subscriberId: "", 
     },
   });
+  
+
+  useEffect(() => {
+    if (subscriptionId) {
+      setValue("subscriberId", subscriptionId); 
+    }
+  }, [subscriptionId, setValue]);
 
   async function handleSignup(data: FormSchemaType) {
-    console.log(data)
+    console.log('register', data);
     if (!policyTerms) {
       toast.show("É necessário aceitar os termos de uso!", {
         placement: "top",
@@ -93,7 +103,7 @@ export function CreateAccount() {
       });
       return;
     }
-
+  
     setIsLoading(true);
     try {
       await signUp({
@@ -101,6 +111,7 @@ export function CreateAccount() {
         email: data.email,
         password: data.password,
         phone: data.phone,
+        subscribed: data.subscriberId || "", 
       });
       toast.show("Conta criada com sucesso!", {
         placement: "top",
@@ -118,6 +129,7 @@ export function CreateAccount() {
       setIsLoading(false);
     }
   }
+  
 
   return (
     <DefaultContainer>
