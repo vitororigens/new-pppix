@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAxios } from '../hooks/useAxios';
-
+import { AuthContext } from './AuthContext';
 
 interface UserData {
   email: string;
   phone: string;
+  subscribed: string;
 }
 
 interface GroupData {
@@ -24,21 +25,28 @@ interface GroupContextProps {
 }
 
 const GroupContext = createContext<GroupContextProps | undefined>(undefined);
+
 interface GroupProviderInterface {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export const GroupProvider = ({ children }: GroupProviderInterface) => {
   const { api } = useAxios();
+  const { authData } = useContext(AuthContext); 
   const [groups, setGroups] = useState<GroupData[]>([]);
-  console.log(JSON.stringify(groups.map((group) => group.users), null, 2));
-
   const [loading, setLoading] = useState(true);
 
   const updateGroups = async () => {
+    if (!authData) {
+      console.log("Usuário não autenticado, não é possível buscar grupos.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await api.get('/group');
       setGroups(response.data.groups);
+      console.log('Dados dos grupos recebidos:', response.data);
     } catch (error) {
       console.error('Erro ao obter grupos:', error);
     } finally {
@@ -65,8 +73,12 @@ export const GroupProvider = ({ children }: GroupProviderInterface) => {
   };
 
   useEffect(() => {
-    updateGroups();
-  }, []);
+    if (authData) {
+      updateGroups();
+    } else {
+      console.log('Usuário não autenticado, grupos não serão carregados.');
+    }
+  }, [authData]); 
 
   return (
     <GroupContext.Provider

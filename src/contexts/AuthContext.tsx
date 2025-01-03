@@ -1,9 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, SetStateAction, useEffect, useState } from "react";
 import { AuthServices } from "../services/AuthServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState } from "react-native";
 import api from "../config/Axios";
-import {Toast} from "react-native-toast-notifications";
+import { Toast } from "react-native-toast-notifications";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -33,6 +33,7 @@ export interface Car {
   color: string;
   licensePlate: string;
 }
+
 export interface AuthData {
   token: string;
   email: string;
@@ -56,9 +57,9 @@ export interface AuthContextDataProps {
   securityMode: boolean;
   setSecurityMode: (value: boolean) => void;
   passwords: string[];
-  handleChangePassword: (array: any) => Promise<void>;
+  handleChangePassword: (array: string[]) => Promise<void>;
   loaded: boolean;
-  setAuthData: any;
+  setAuthData: React.Dispatch<React.SetStateAction<AuthData | null>>;
 }
 
 export const AuthContext = createContext<AuthContextDataProps>(
@@ -67,61 +68,43 @@ export const AuthContext = createContext<AuthContextDataProps>(
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [authData, setAuthData] = useState<AuthData | null>(null);
-  console.log(authData);
-  const [passwords, setPassword] = useState(['', '', '']);
+  console.log('authData', authData);
+  const [passwords, setPasswords] = useState(["", "", ""]);
   const [appState, setAppState] = useState(AppState.currentState);
   const [userLogged, setUserLogged] = useState(false);
   const [securityMode, setSecurityMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      await isLoggedAsync();
-    };
-
-    fetchData();
+    isLoggedAsync();
   }, []);
 
   useEffect(() => {
-    const state = AppState.addEventListener("change", handleAppStateChange);
+    const stateListener = AppState.addEventListener("change", handleAppStateChange);
     return () => {
-      state.remove();
+      stateListener.remove();
     };
   }, [userLogged, authData]);
 
-  const handleAppStateChange = (nextAppState: any) => {
-    if (nextAppState === "background") {
-      if (!userLogged) {
-        setSecurityMode(false);
-      } else if (userLogged) {
-        if (
-          authData !== undefined &&
-          authData?.passwordApp !== '' &&
-          authData?.passwordEmergecy !== '' &&
-          authData?.passwordBank !== '' &&
-          authData?.passwordDevice !== '' &&
-          authData?.passwordDeviceEmergency !== ''
-        ) {
-          setSecurityMode(true);
-        }
-      }
-    }
+  const handleAppStateChange = (nextAppState: SetStateAction<"active" | "background" | "inactive" | "unknown" | "extension">) => {
+    if (nextAppState === "background" && userLogged && authData) {
+      const passwordsFilled =
+        authData.passwordApp &&
+        authData.passwordEmergecy &&
+        authData.passwordBank &&
+        authData.passwordDevice &&
+        authData.passwordDeviceEmergency;
 
-    if (
-      appState.match(/inactive|background/) &&
-      nextAppState === "false"
-    ) {
-      console.log("O aplicativo voltou para o primeiro plano!");
+      setSecurityMode(passwordsFilled);
     }
-
     setAppState(nextAppState);
   };
 
-  const handleChangePassword = async (array: any) => {
-    setPassword(array);
+  const handleChangePassword = async (array: string[]) => {
+    setPasswords(array);
   };
 
-  async function signin({ email, password }: SigninData): Promise<AuthData | void> {
+  const signin = async ({ email, password }: SigninData): Promise<AuthData | void> => {
     try {
       const response = await AuthServices.signIn(email, password);
       const auth = { token: response.data.token, ...response.data.user };
@@ -129,9 +112,6 @@ function AuthProvider({ children }: AuthProviderProps) {
       await AsyncStorage.setItem("authData", JSON.stringify(auth));
 
       setUserLogged(true);
-
-      console.log("Dados armazenados: ", auth);
-
       Toast.show("Login realizado com sucesso!", {
         type: "success",
         duration: 3000,
@@ -147,9 +127,9 @@ function AuthProvider({ children }: AuthProviderProps) {
         placement: "top",
       });
     }
-  }
+  };
 
-  async function signUp({ email, password, phone, name, subscribed }: SignupData) {
+  const signUp = async ({ email, password, phone, name, subscribed }: SignupData) => {
     try {
       await AuthServices.signUp(email, password, phone, name, subscribed);
       Toast.show("Cadastro realizado com sucesso!", {
@@ -158,17 +138,16 @@ function AuthProvider({ children }: AuthProviderProps) {
         placement: "top",
       });
     } catch (error: any) {
-      console.error("Erro ao verificar autenticação:", error);
-
+      console.error("Erro ao cadastrar:", error);
       Toast.show(error.response?.data?.errors || "Erro desconhecido", {
         type: "danger",
         duration: 3000,
         placement: "top",
       });
     }
-  }
+  };
 
-  async function signOut() {
+  const signOut = async () => {
     try {
       await AsyncStorage.removeItem("authData");
       setUserLogged(false);
@@ -181,49 +160,45 @@ function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error("Erro durante o logout:", error);
     }
-  }
+  };
 
-  async function isLoggedAsync() {
+  const isLoggedAsync = async () => {
     try {
       const authDataString = await AsyncStorage.getItem("authData");
       if (authDataString) {
         const data = JSON.parse(authDataString);
-        const response = await api.get('auth/check', {
+        const response = await api.get("auth/check", {
           headers: {
-            'Authorization': `Bearer ${data.token}`
-          }
+            Authorization: `Bearer ${data.token}`,
+          },
         });
 
-        setUserLogged(true);
-        setAuthData({
+        const userData = response.data.user;
+        const updatedAuthData = {
           token: data.token,
-          ...response.data.user,
-          passwordApp: response.data.user.passwordApp || '',
-          passwordEmergecy: response.data.user.passwordEmergecy || '',
-          passwordBank: response.data.user.passwordBank || '',
-          passwordDevice: response.data.user.passwordDevice || '',
-          passwordDeviceEmergency: response.data.user.passwordDeviceEmergency || ''
-        });
+          ...userData,
+        };
 
-        if (
-          response.data.user.passwordApp !== '' &&
-          response.data.user.passwordEmergecy !== '' &&
-          response.data.user.passwordBank !== '' &&
-          response.data.user.passwordDevice || '' &&
-          response.data.user.passwordDeviceEmergency || ''
-        ) {
-          setSecurityMode(true);
-        }
-        setLoaded(true);
+        setAuthData(updatedAuthData);
+        setUserLogged(true);
+
+        const passwordsFilled =
+          userData.passwordApp &&
+          userData.passwordEmergecy &&
+          userData.passwordBank &&
+          userData.passwordDevice &&
+          userData.passwordDeviceEmergency;
+
+        setSecurityMode(passwordsFilled);
       } else {
         setUserLogged(false);
         setSecurityMode(false);
-        setLoaded(true);
       }
+      setLoaded(true);
     } catch (error) {
       console.error("Erro ao verificar autenticação:", error);
     }
-  }
+  };
 
   return (
     <AuthContext.Provider

@@ -11,6 +11,7 @@ import { VerificationRoutes } from "./VerificationRoutes";
 export function Routes() {
   const [appState, setAppState] = useState(AppState.currentState);
   const { authData, userLogged, securityMode, loaded } = useAuth();
+  console.log(authData, userLogged, securityMode, loaded);
 
   if (securityMode && userLogged) {
     return (

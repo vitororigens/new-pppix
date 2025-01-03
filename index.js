@@ -1,84 +1,70 @@
 import { registerRootComponent } from 'expo';
 import App from './App';
-import messaging from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
-import { Linking } from 'react-native';
+import { Linking, useEffect } from 'react-native';
+import OneSignal from 'react-native-onesignal'; // Corrigido import
 
-// Função para criar canal de notificação
+// Inicialização do OneSignal e configuração do handler
+useEffect(() => {
+  // Inicializa o OneSignal com a App ID
+  OneSignal.setAppId("4952e39a-7818-41e7-b4c8-45164fe19b73");
+
+  // Solicita permissão para notificações
+  OneSignal.promptForPushNotificationsWithUserResponse();
+
+  // Handler para interceptar notificações em primeiro plano
+  OneSignal.setNotificationWillShowInForegroundHandler(async (notificationReceivedEvent) => {
+    const notification = notificationReceivedEvent.getNotification();
+
+    // Cancela a exibição padrão da notificação do OneSignal
+    notificationReceivedEvent.complete(null);
+
+    // Exibe a notificação com o Notifee
+    await notifee.displayNotification({
+      title: notification.title,
+      body: notification.body,
+      android: {
+        channelId: 'som', // Certifique-se de que o canal existe
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  });
+}, []);
+
+// Função para criar canal de notificação no Notifee
 async function createChannel() {
-    try {
-        await notifee.createChannel({
-            id: 'som',
-            name: 'Som de Alerta',
-            sound: 'alerta',
-            importance: notifee.AndroidImportance.HIGH,
-        });
-        console.log('Canal de notificação criado com sucesso');
-    } catch (error) {
-        console.error('Erro ao criar o canal de notificação:', error);
-    }
+  try {
+    await notifee.createChannel({
+      id: 'som',
+      name: 'Som de Alerta',
+      sound: 'alerta',
+      importance: notifee.AndroidImportance.HIGH,
+    });
+    console.log('Canal de notificação criado com sucesso');
+  } catch (error) {
+    console.error('Erro ao criar o canal de notificação:', error);
+  }
 }
 
-// Handler para eventos em segundo plano
+// Chama a criação do canal no início
+createChannel();
+
+// Handler para eventos em segundo plano do Notifee
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-    const { pressAction } = detail;
-    if (type === EventType.ACTION_PRESS && pressAction.id === 'snooze') {
-        try {
-            notifee.hideNotificationDrawer();
-            Linking.openURL('tel:190'); // Liga para a polícia
-            console.log('Ação de botão de notificação executada');
-        } catch (error) {
-            console.error('Erro ao processar evento em segundo plano:', error);
-        }
+  const { pressAction } = detail;
+
+  if (type === EventType.ACTION_PRESS && pressAction.id === 'snooze') {
+    try {
+      notifee.hideNotificationDrawer();
+      Linking.openURL('tel:190'); // Liga para a polícia
+      console.log('Ação de botão de notificação executada');
+    } catch (error) {
+      console.error('Erro ao processar evento em segundo plano:', error);
     }
+  }
 });
 
-// Handler para mensagens de segundo plano
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-    try {
-        console.log('Mensagem recebida no background:', remoteMessage);
-        if (remoteMessage?.data) {
-            await notifee.displayNotification({
-                title: `Atenção ${remoteMessage.data.name}`,
-                body: 'Novo alerta de emergência',
-                android: {
-                    channelId: 'som',
-                    sound: 'alerta',
-                    pressAction: {
-                        id: 'default',
-                    },
-                    actions: [
-                        {
-                            title: 'Ligar para polícia',
-                            pressAction: { id: 'snooze' },
-                        },
-                    ],
-                },
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao exibir notificação no background:', error);
-    }
-});
-
-// Inicializa as configurações e registra o app
-(async () => {
-    try {
-        await createChannel();
-
-        // Solicita permissões de notificação, se necessário
-        const authStatus = await messaging().hasPermission();
-        if (authStatus === messaging.AuthorizationStatus.NOT_DETERMINED) {
-            await messaging().requestPermission();
-            console.log('Permissões de notificação solicitadas');
-        }
-
-        const token = await messaging().getToken();
-        console.log('Token de dispositivo FCM:', token);
-
-    } catch (error) {
-        console.error('Erro durante a inicialização:', error);
-    }
-})();
-
+// Registra o componente principal
 registerRootComponent(App);

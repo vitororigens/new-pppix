@@ -11,7 +11,7 @@ import { useGroups } from "../../contexts/useGroups";
 
 
 export function Groups() {
-  const { groups, loading, updateGroups, handleSaveGroup, handleExitGroup } = useGroups(); // Usando o contexto
+  const { groups, loading, handleSaveGroup, handleExitGroup } = useGroups(); // Usando o contexto
   const [editName, setEditName] = useState("");
   const [search, setSearch] = useState("");
   const [modalVisible, setModalVisible] = useState(false);

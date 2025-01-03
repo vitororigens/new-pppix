@@ -9,20 +9,29 @@ import { Button } from '../../components/Button';
 import { Container } from './styles';
 import { AuthData } from '../../contexts/AuthContext';
 import useSendNotifications from '../../hooks/useSendNotifications';
+import { useGroups } from '../../contexts/useGroups';
 
 export default function Verification() {
     const [password, setPassword] = useState("");
     const { setSecurityMode, authData } = useAuth();
     const { api } = useAxios();
     const { sendNotification } = useSendNotifications();
+    const { groups, loading } = useGroups();
+    
+    // Extrair todos os subscriptionIds dos usuários inscritos
+    const subscriptionIds = groups.flatMap((group) =>
+        group.users.map((user) => user.subscribed)
+    );
+
+    console.log("subscriptionIds:", subscriptionIds);
 
     const handleScheduleNotification = async (data: AuthData) => {
-        const subscriptionId = "b6b72993-6391-49b7-bc52-067a8222a49d";
+ 
 
         sendNotification({
             title: data.email + " enviou um SOS",
             message: "Você tem um novo evento agendado!",
-            subscriptionsIds: [subscriptionId],
+            subscriptionsIds: subscriptionIds,
         }).then(() => {
             console.log("Notificação enviada com sucesso!");
         }).catch(error => {
@@ -51,7 +60,7 @@ export default function Verification() {
 
             setPassword("");
         } else if (password == authData?.passwordEmergecy) {
-            
+            handleScheduleNotification(authData);
             api.post('alert/create')
                 .then(() => {
                     console.log('entrou')
