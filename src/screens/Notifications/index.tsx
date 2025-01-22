@@ -59,7 +59,11 @@ export function Notifications() {
     }
 
     function handleFinishAll() {
-        api.post("alert/finish/all").then(() => {
+        const payload = {
+            tipo: "recebido",
+        };
+    
+        api.post("alert/finish/all", payload).then(() => {
             Toast.show("Alertas encerrados com sucesso!!", {
                 placement: "top",
                 duration: 3000,
@@ -68,6 +72,7 @@ export function Notifications() {
             updateAlerts();
         });
     }
+    
 
     function updateAlerts() {
         setLoading(true);
