@@ -96,39 +96,34 @@ export function CreateAccount() {
   async function handleSignup(data: FormSchemaType) {
     console.log('register', data);
     if (!policyTerms) {
-      toast.show("É necessário aceitar os termos de uso!", {
-        placement: "top",
-        type: "danger",
-        duration: 5000,
-      });
-      return;
+        toast.show("É necessário aceitar os termos de uso!", {
+            placement: "top",
+            type: "danger",
+            duration: 5000,
+        });
+        return;
     }
-  
+
     setIsLoading(true);
     try {
-      await signUp({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        phone: data.phone,
-        subscriptionsids: data.subscriberId || "", 
-      });
-      toast.show("Conta criada com sucesso!", {
-        placement: "top",
-        type: "success",
-        duration: 5000,
-      });
-      navigation.navigate("login");
+        await signUp({
+            name: data.name,
+            email: data.email.toLowerCase(), 
+            password: data.password,
+            phone: data.phone,
+            subscriptionsids: data.subscriberId || "",
+        });
+        toast.show("Conta criada com sucesso!", {
+            placement: "top",
+            type: "success",
+            duration: 5000,
+        });
     } catch (error) {
-      toast.show("Erro ao criar conta. Tente novamente.", {
-        placement: "top",
-        type: "danger",
-        duration: 5000,
-      });
+        console.error("Erro ao criar conta:", error);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  }
+}
   
 
   return (

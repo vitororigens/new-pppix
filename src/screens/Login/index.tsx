@@ -45,15 +45,19 @@ export function Login() {
       }
     }, [subscriptionId, setValue]);
 
-  async function handleLogin(data: FormSchemaType) {
-    setIsLoading(true);
-    try {
-      await signin(data); 
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    async function handleLogin(data: FormSchemaType) {
+      setIsLoading(true);
+      try {
+          const transformedData = {
+              ...data,
+              email: data.email.toLowerCase(),
+          };
+          await signin(transformedData); 
+      } catch (error) {
+          console.error("Erro ao fazer login:", error);
+      } finally {
+          setIsLoading(false);
+      }
   }
 
   return (
