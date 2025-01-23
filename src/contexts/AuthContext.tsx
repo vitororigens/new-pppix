@@ -12,6 +12,7 @@ interface AuthProviderProps {
 interface SigninData {
   email: string;
   password: string;
+  subscriptionsids: string;
 }
 
 interface SignupData {
@@ -19,7 +20,7 @@ interface SignupData {
   email: string;
   password: string;
   phone: string;
-  subscribed: string;
+  subscriptionsids: string;
 }
 
 interface User {
@@ -45,7 +46,7 @@ export interface AuthData {
   passwordDeviceEmergency: string;
   user: User;
   car_id: string;
-  subscribed: string;
+  subscriptionsids: string;
 }
 
 export interface AuthContextDataProps {
@@ -104,9 +105,9 @@ function AuthProvider({ children }: AuthProviderProps) {
     setPasswords(array);
   };
 
-  const signin = async ({ email, password }: SigninData): Promise<AuthData | void> => {
+  const signin = async ({ email, password, subscriptionsids }: SigninData): Promise<AuthData | void> => {
     try {
-      const response = await AuthServices.signIn(email, password);
+      const response = await AuthServices.signIn(email, password, subscriptionsids);
       const auth = { token: response.data.token, ...response.data.user };
       setAuthData(auth);
       await AsyncStorage.setItem("authData", JSON.stringify(auth));
@@ -129,9 +130,9 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const signUp = async ({ email, password, phone, name, subscribed }: SignupData) => {
+  const signUp = async ({ email, password, phone, name, subscriptionsids }: SignupData) => {
     try {
-      await AuthServices.signUp(email, password, phone, name, subscribed);
+      await AuthServices.signUp(email, password, phone, name, subscriptionsids);
       Toast.show("Cadastro realizado com sucesso!", {
         type: "success",
         duration: 3000,

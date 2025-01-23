@@ -8,12 +8,14 @@ import { useNavigation } from "@react-navigation/native";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import useSendNotifications from "../../hooks/useSendNotifications";
 
 const formSchema = z.object({
   email: z.string().min(1, "Email é obrigatório").email("Formato inválido"),
   password: z.string().min(1, "Senha é obrigatória"),
+  subscriptionsids: z.string().min(1, "subscriptionsids é obrigatório"),
 });
 
 type FormSchemaType = z.infer<typeof formSchema>;
@@ -22,11 +24,13 @@ export function Login() {
   const navigation = useNavigation();
   const { signin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const {subscriptionId} = useSendNotifications()
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue
   } = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,6 +38,12 @@ export function Login() {
       password: "",
     },
   });
+
+    useEffect(() => {
+      if (subscriptionId) {
+        setValue("subscriptionsids", subscriptionId); 
+      }
+    }, [subscriptionId, setValue]);
 
   async function handleLogin(data: FormSchemaType) {
     setIsLoading(true);

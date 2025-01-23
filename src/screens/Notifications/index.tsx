@@ -60,19 +60,20 @@ export function Notifications() {
 
     function handleFinishAll() {
         const payload = {
-            tipo: "recebido",
+            tipo: select === "myAlert" ? "enviado" : "recebido",
         };
     
-        api.post("alert/finish/all", payload).then(() => {
+        api.post("alert/finish/all", payload).then((response) => {
             Toast.show("Alertas encerrados com sucesso!!", {
                 placement: "top",
                 duration: 3000,
                 type: "success",
             });
             updateAlerts();
+        }).catch((error) => {
+            console.error("Erro ao encerrar alertas:", error);
         });
     }
-    
 
     function updateAlerts() {
         setLoading(true);

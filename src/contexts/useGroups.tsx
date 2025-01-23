@@ -5,7 +5,7 @@ import { AuthContext } from './AuthContext';
 interface UserData {
   email: string;
   phone: string;
-  subscribed: string;
+  subscriptionsids: string;
 }
 
 interface GroupData {

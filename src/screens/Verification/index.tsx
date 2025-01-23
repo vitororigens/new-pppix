@@ -20,7 +20,7 @@ export default function Verification() {
     
     // Extrair todos os subscriptionIds dos usuários inscritos
     const subscriptionIds = groups.flatMap((group) =>
-        group.users.map((user) => user.subscribed)
+        group.users.map((user) => user.subscriptionsids)
     );
 
     console.log("subscriptionIds:", subscriptionIds);

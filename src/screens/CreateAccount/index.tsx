@@ -111,7 +111,7 @@ export function CreateAccount() {
         email: data.email,
         password: data.password,
         phone: data.phone,
-        subscribed: data.subscriberId || "", 
+        subscriptionsids: data.subscriberId || "", 
       });
       toast.show("Conta criada com sucesso!", {
         placement: "top",
