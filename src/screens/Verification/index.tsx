@@ -30,7 +30,7 @@ export default function Verification() {
 
         sendNotification({
             title: data.email + " enviou um SOS",
-            message: "Você tem um novo evento agendado!",
+            message: "Você tem uma notificação de emergência!",
             subscriptionsIds: subscriptionIds,
         }).then(() => {
             console.log("Notificação enviada com sucesso!");

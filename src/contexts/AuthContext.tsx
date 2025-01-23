@@ -95,8 +95,9 @@ function AuthProvider({ children }: AuthProviderProps) {
         authData.passwordBank &&
         authData.passwordDevice &&
         authData.passwordDeviceEmergency;
-
-      setSecurityMode(passwordsFilled);
+        if (!passwordsFilled) {
+          setSecurityMode(true);
+        }
     }
     setAppState(nextAppState);
   };

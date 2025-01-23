@@ -41,14 +41,35 @@ export function Person() {
       passwordDeviceEmergency: authData?.passwordDeviceEmergency || "",
     },
   });
-
   const onSubmit = (data: FormData) => {
+    // Verifica se todas as senhas estão preenchidas
+    const isEmptyField = Object.values(data).some((value) => !value);
+  
+    if (isEmptyField) {
+      Toast.show("Todas as senhas precisam estar preenchidas!", {
+        placement: "top",
+        duration: 3000,
+        type: "danger",
+      });
+      return;
+    }
+  
+    // Verifica se o usuário tem um carro cadastrado antes de prosseguir
+    if (!authData?.user?.car_id) {
+      Toast.show("Para cadastrar as senhas, é obrigatório ter um carro cadastrado e estar em um grupo.", {
+        placement: "top",
+        duration: 3000,
+        type: "danger",
+      });
+      return;
+    }
+  
     api
       .post("user/change/passwords", data)
       .then(() => {
         setAuthData({
           ...authData,
-          user: { ...authData, ...data },
+          user: { ...authData.user, ...data },
         });
         Toast.show("Senhas alteradas com sucesso!", {
           placement: "top",
@@ -64,6 +85,7 @@ export function Person() {
         });
       });
   };
+  
 
   return (
     <DefaultContainer showMenu showButtonGears title="Perfil">
