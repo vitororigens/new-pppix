@@ -48,6 +48,18 @@
         <action android:name="android.intent.action.BOOT_COMPLETED" />
       </intent-filter>
     </receiver>
+    <receiver android:name=".ScreenReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.SCREEN_ON" />
+        <action android:name="android.intent.action.SCREEN_OFF" />
+        <action android:name="android.intent.action.USER_PRESENT" />
+    </intent-filter>
+</receiver>
+<receiver android:name=".BootReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+    </intent-filter>
+</receiver>
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCH-5KSV9GW44FSSV9DtWbRdejEMx-rZRg"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
