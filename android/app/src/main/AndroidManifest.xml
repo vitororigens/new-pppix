@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -23,6 +24,7 @@
   <uses-permission android:name="android.permission.ACTION_USER_PRESENT"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
   <queries>
     <intent>
@@ -37,14 +39,19 @@
     android:resource="@raw/alerta" />
 
   <service
-        android:name=".LockScreenService" />
+        android:name=".LockScreenService"
+        android:enabled="true"
+        android:exported="false" />
 
     <!-- LockScreenIntentReceiver -->
     <receiver 
-      android:name="app.ppix.io.mobile.LockScreenIntentReceiver"
+      android:name=".LockScreenIntentReceiver"
       android:enabled="true"
       android:exported="true">
       <intent-filter>
+        <action android:name="android.intent.action.SCREEN_ON" />
+        <action android:name="android.intent.action.SCREEN_OFF" />
+        <action android:name="android.intent.action.USER_PRESENT" />
         <action android:name="android.intent.action.BOOT_COMPLETED" />
       </intent-filter>
     </receiver>
@@ -66,7 +73,7 @@
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://u.expo.dev/4000ef47-3bde-4053-881b-97b15f0f2abf"/>
-    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
+    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait" android:showWhenLocked="true" android:turnScreenOn="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
